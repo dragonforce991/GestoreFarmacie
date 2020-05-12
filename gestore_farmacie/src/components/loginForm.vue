@@ -26,23 +26,24 @@
               <v-card-text>
                 <v-form>
                   <v-text-field
-                    
                     @input="checkDisabled()"
                     v-model="username"
                     label="Login"
                     name="login"
                     prepend-icon="person"
                     type="text"
+                    :error-messages="userErrorMessage"
+                    :error="userError"
                   ></v-text-field>
-
                   <v-text-field
                     @input="checkDisabled()"
-                   
                     v-model="password"
                     id="password"
                     label="Password"
                     name="password"
                     prepend-icon="lock"
+                    :error-messages="passwordErrorMessage"
+                    :error="passwordError"
                     type="password"
                   ></v-text-field>
                 </v-form>
@@ -63,7 +64,6 @@
                 :disabled= "disabled"
                 >Login</v-btn>
               </v-card-actions>
-
             </v-card>
           </v-col>
         </v-row>
@@ -71,6 +71,7 @@
       </v-container>
     </v-content>
   </v-app>
+  
 </template>
 
 <script>
@@ -84,25 +85,48 @@ import Api from '../services/api.js'
             this.disabled = this.password == "" || this.username == ""
         },
         checkLogin(){
-            
+            console.log("qui");
+            if(!this.disabled){
             Api().post('/login', {
                 user: this.username,
                 pass: this.password
             }).then((response)=>{
-                console.log(response);
+                var user;
                 this.error = response.data.error;
                 this.errorMessage = response.data.errorMessage;
-                if(this.error === false && this.errorMessage === undefined)
+                if(this.error === false && this.errorMessage === undefined){
+                    this.userError= false;
+                    this.passwordError = false;
+                    this.passwordErrorMessage="";
+                    this.userErrorMessage="";
                     this.login = true;
-                else 
-                    this.login = false; 
-                var user = {
-                  name  : response.data.username,
-                  profileName: response.data.profileName
-                }
+                    user = {
+                      name  : response.data.username,
+                      profileName: response.data.profileName
+                    }
+                  }
+                else {
+                        this.login = false;
+                        this.userError= true;
+                        this.passwordError = true;
+                    } 
+                
                
                 this.$emit('isLogged', this.login, user)
             })
+            }
+            else{
+          //    var this = this;
+              if (this.username == ""){
+                this.userError= true;
+                this.userErrorMessage = "Inserisci il nome utente"
+              }
+              if(this.password === ""){
+                this.passwordError = true;
+                this.passwordErrorMessage = "Inserisci una password";
+
+              }
+            }
         }
     },
     data(){
@@ -112,8 +136,20 @@ import Api from '../services/api.js'
             disabled: true,
             login: null,
             error: false,
-            errorMessage: ""
+            errorMessage: "",
+            userErrorMessage:"",
+            userError:false,
+            passwordErrorMessage:"",
+            passwordError:false
         }
+    },
+    mounted(){
+      var self = this;
+      window.addEventListener('keyup', function(event) {
+      if (event.keyCode === 13) { 
+        self.checkLogin();
+      }
+    });
     }
 
  }
