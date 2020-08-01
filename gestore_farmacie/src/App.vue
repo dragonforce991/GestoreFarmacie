@@ -1,6 +1,6 @@
 <template>
   <loginForm v-if="logged===false" v-on:isLogged="isLogged"></loginForm>
-  <homePage :user = "user" v-else ></homePage>
+  <homePage :user="user" v-else ></homePage>
 </template>
 
 <script>

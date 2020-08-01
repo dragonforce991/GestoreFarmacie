@@ -76,33 +76,42 @@
 
 <script>
 import Api from '../services/api.js'
+import sha256 from 'crypto-js/sha256'
  export default {
     props: {
       source: String,
     },
     methods:{
+        eve(event){
+          if(event.keyCode === 13) {
+            this.checkLogin();
+          }
+        }, 
         checkDisabled(){
             this.disabled = this.password == "" || this.username == ""
         },
         checkLogin(){
-            console.log("qui");
+           
             if(!this.disabled){
-            Api().post('/login', {
-                user: this.username,
-                pass: this.password
+              //var req = JSON.stringify("name: '" + this.username + "', pass: '" + sha256(this.password).toString()+"'")
+            Api().post('/Login', {
+              name: this.username,
+              pass: sha256(this.password).toString()
             }).then((response)=>{
+                console.log(response.data)
                 var user;
                 this.error = response.data.error;
                 this.errorMessage = response.data.errorMessage;
-                if(this.error === false && this.errorMessage === undefined){
+                if(this.error === false && this.errorMessage === ""){
                     this.userError= false;
                     this.passwordError = false;
                     this.passwordErrorMessage="";
                     this.userErrorMessage="";
                     this.login = true;
                     user = {
-                      name  : response.data.username,
-                      profileName: response.data.profileName
+                      name  : response.data.userName,
+                      profileName: response.data.profileName,
+                      id: response.data.ID
                     }
                   }
                 else {
@@ -127,6 +136,7 @@ import Api from '../services/api.js'
 
               }
             }
+            
         }
     },
     data(){
@@ -144,12 +154,11 @@ import Api from '../services/api.js'
         }
     },
     mounted(){
-      var self = this;
-      window.addEventListener('keyup', function(event) {
-      if (event.keyCode === 13) { 
-        self.checkLogin();
-      }
-    });
+
+      window.addEventListener('keyup', this.eve);
+    },
+    beforeDestroy(){
+      window.removeEventListener('keyup',this.eve)
     }
 
  }

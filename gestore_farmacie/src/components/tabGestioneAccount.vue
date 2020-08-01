@@ -1,5 +1,5 @@
 <template>
-    <div>Venditacomponent</div>
+    <div>Gestione Account Component</div>
 </template>
 
 <script>

@@ -1,7 +1,7 @@
 <template>
   <v-app id="inspire">
     <v-navigation-drawer v-model="drawer" app>
-      <v-list dense>
+      <v-list shaped>
         <div
             v-for="(tab,i) in tabs"
             v-bind:key="i"
@@ -9,16 +9,19 @@
             @click="currentTab=tab"
             
           >
-          <v-list-item link>
-            <v-list-item-action>
-              <v-icon>{{tab.icon}}</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>{{tab.name}}</v-list-item-title>
-            </v-list-item-content>
-            </v-list-item>
+          <template v-if = "tab.condition">
+            <v-list-item  link>
+              <v-list-item-action>
+                <v-icon>{{tab.icon}}</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>{{tab.visualName}}</v-list-item-title>
+              </v-list-item-content>
+              </v-list-item>
+          </template>
           </div>
       </v-list>
+
     </v-navigation-drawer>
 
     <v-app-bar app color="indigo" dark>
@@ -27,16 +30,19 @@
     </v-app-bar>
 
     <v-content>
-      <v-container class="fill-height" fluid>
-        <v-row align="stretch" justify="center">
+       <!-- class="fill-height" -->
+      <v-container fluid>
+        <!-- <v-row align="stretch" justify="center"> -->
         <keep-alive>
             <component v-bind:is="currentTab.component"></component>
         </keep-alive>
-        </v-row>
+        <!-- </v-row> -->
       </v-container>
     </v-content>
     <v-footer color="indigo" app>
-      <span class="white--text">&copy; 2019</span>
+      <v-spacer></v-spacer>
+      <div class="white--text"><v-icon>tab</v-icon> {{ currentTab.visualName }}</div>
+      <!-- <span class="white--text">&copy;{{currentTab.name}}</span> -->
     </v-footer>
   </v-app>
 </template>
@@ -44,25 +50,41 @@
 <script>
 import tabVendita from "./tabVendita";
 import tabInserisciutente from "./tabInserisciUtente";
+import tabGestioneAccount from "./tabGestioneAccount";
 export default {
   name: "homePage",
+  props:{
+        user: Object
+      },
 //   components: {
 //     tabVendita,
 //     tabInserisciutente
 //   },
   data() {
     return {
+      
       currentTab: {},
       tabs: [
             {
                 name:"Vendita",
+                visualName: "Vendita",
                 icon:"shopping_basket",
-                component: tabVendita
+                component: tabVendita,
+                condition: this.user.profileName == "REG" || this.user.profileName == "TF"
             },
             {
                 name:"InserisciUtente",
+                visualName: "Gestione Utenti",
                 icon:"group_add",
-                component: tabInserisciutente
+                component: tabInserisciutente,
+                condition: this.user.profileName == "REG"
+            },
+            {
+                name: "GestioneAccount",
+                visualName: "Gestione Account",
+                icon:"person",
+                component: tabGestioneAccount,
+                condition: true
             }
         ],
       drawer: false
@@ -71,6 +93,7 @@ export default {
   created() {
       //this.tabs.push(object {name,icon,component}) per gestire la visibilità sui profili
       this.currentTab = this.tabs[0];
+      console.log(this.user);
   },
 };
 </script>

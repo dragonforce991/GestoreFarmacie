@@ -1,0 +1,54 @@
+• REG si collega in qualita’ di coordinatore, allo scopo di “attivare” le varie farmacie
+identificandole con nome, indirizzo, telefono e nome del Titolare Farmacista (TF). Il processo
+di attivazione di una farmacia prevede anche la creazione di un account individuale per TF;
+	- tab di creazione farmacia visibile solo a reg e admin;
+	- tabelle interessate : farmacie-account-user;
+TF collegandosi all’applicazione potra’ registrare il personale collaboratore della propria
+farmacia e crearne gli account individuali. Oltre ad un singolo TF (creato da REG) una farmacia
+si avvale infatti di due ulteriori tipi di collaboratori presenti in numero variabile: i Dottori
+Farmacisti (DF) e gli Operatori di Banco (OB)
+	- tab creazione personale 
+	- tabelle interessate: sottoaccount- farmacia 
+Il personale di ciascuna farmacia potra’ vedere esclusivamente le attivita’ che riguardano la
+farmacia in cui opera e non avra’ alcuna visibilita’ su quanto effettuato dalle altre;	-tutte le tabelle devono avere un riferimento alla farmacia di appartenenza così da poter filtrare adeguatamente l'output visualizzato.
+All’interno di ciascuna farmacia le varie utenze avranno le seguenti funzionalita’:
+◦ OB: possono solo vendere prodotti da banco (quelli privi di ricetta);
+◦ DF: oltre alla funzionalita’ di A) possono vendere anche i prodotti con obbligo di ricetta;
+◦ TF: oltre ad A) e B) possono reintegrare il magazzino ordinando i farmaci all’esterno;
+Ogni acquisto puo’ includere un numero variabile di prodotti, e per ciascuno di essi puo’ essere
+richiesta piu’ di una confezione, con l’unico limite che tutto cio’ che viene acquistato sia
+disponibile e venga scalato dal magazzino;
+	- pagina di vendita con component bloccati o sbloccati a secondo del profilo dello user che richiede il tab.
+	- chiamata a servizio per compilazione vendita.
+	- validazione vendita con gestione disponibilità.
+	- salvataggio vendita, scalare prodotti.
+	
+	- pagina ordine accessibile solo a TF.
+	- servizio mockato per farmaci ordinabili con disponibilità.
+	- pagina gestione magazzino (accessibile in modifica solo da TF, lettura per tutti gli altri).
+	
+L’acquisto che comprende almeno un prodotto con obbligo di ricetta medica prevede invece che
+l’operatore sia necessariamente un DF o un TF che, dopo aver visto la ipotetica ricetta (non
+gestita dal sito) contenente le generalita’ del paziente:
+• verifica che il paziente univocamente identificato dal codice fiscale indicato sulla ricetta sia
+gia’ presente nel sistema della regione ricercandolo per nome/cognome/data nascita/codice
+fiscale.
+• Qualora il paziente non sia presente provvedera’ ad inserirlo seduta stante. In quest’ultimo
+caso il sistema deve tenere traccia dell’operatore che lo ha inserito e da quel momento il
+paziente diventera’ visibile anche a tutte le altre farmacie;
+• L’intero acquisto contenente almeno un farmaco con obbligo di ricetta medica dovra’ essere
+associato anche al paziente per ragioni di tracciabilita’;
+• Per ogni farmaco con obbligo di ricetta medica presente nell’acquisto dovranno essere
+indicati i riferimenti alla relativa ricetta: codice regionale medico, data della ricetta. E’
+quindi opportuno avere un elenco dei medici con i loro codici regionali.
+• Quando l’acquisto e’ completo verra’ calcolato il totale che si assume venga pagato di
+persona dal paziente che contestualmente ritira il materiale;
+	- al punto precedente aggiungere popup di inserimento paziente, se questo non è presente ( sia in fase di salvataggio, che in fase di validazione, con controllo sui profili)
+	- sull'acquisto aggiungere campi/o per tracciare la ricetta
+	
+Sia REG che TF collegandosi devono avere un cruscotto (il TF con visibilita’ limitata alla sola farmacia
+di cui e’ titolare) che consente di analizzare la situazione vendite ad un livello sufficiente di dettaglio.
+(es: numero complessivo di acquisti, di pezzi venduti, numero di farmaci con ricetta, numero di ricette,
+numero medio di farmaci prescritti per ricetta). Tali analisi potranno essere fatte sia sull’intero
+contenuto del database sia essere limitate ad un periodo di tempo. 
+	- tab di reportistica con scelta del relativo report(agli esempi cercare qualcosa da aggiungere)
