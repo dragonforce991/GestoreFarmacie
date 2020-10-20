@@ -1,7 +1,0 @@
-<template>
-    <div>Venditacomponent</div>
-</template>
-
-<script>
-export default { }
-</script>
