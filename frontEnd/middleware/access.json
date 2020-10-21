@@ -1,0 +1,35 @@
+{
+	"accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiZjEzOTM3N2QtZTYxOS00NTQyLTk4NmEtZmRiMTZiNjBhMjI5IiwiaWF0IjoxNjAyOTUyMTk0fQ.6-8_NTl0KEnThTAVzCV6cNUL9kjl8pz9rI79eoUTRas",
+	"user":{
+		 "id":"f139377d-e619-4542-986a-fdb16b60a229",
+		 "full_name":"Alberto Musciumarra",
+		 "name":"Alberto",
+		 "surname":"Musciumarra",
+		 "email":"albertomusciumarra@gmail.com",
+		 "phone_number":"3801922915",
+		 "sections":[
+				
+		 ],
+		 "role":{
+				"id":"9a5ca42a-39b8-4ac5-b1c5-1ded03987ff2",
+				"name":"Capo",
+				"icon":"mdi-account-tie",
+				"default_path":"/dashboard/agents",
+				"pages":[
+					 {
+							"id":2,
+							"url":"/dashboard/channels",
+							"icon":"mdi-factory",
+							"name":"channels",
+							"title":"Canali",
+							"create":true,
+							"delete":true,
+							"modify":true,
+							"parent":null
+					 }
+
+				]
+		 }
+	}
+}
+
