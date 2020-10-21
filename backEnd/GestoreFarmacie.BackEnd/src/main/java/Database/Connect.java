@@ -5,8 +5,7 @@ public class Connect {
 
     public static Connection getConnection() throws ClassNotFoundException, SQLException {
         Connection conn = null;
-        Class.forName("com.mysql.jdbc.Driver");
-        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/gestorefarmacie","root","");
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/gestfarma?user=root&password=root&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
         return conn;
     }
 } 

@@ -3,15 +3,10 @@ package RestServices;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
-
 import io.jsonwebtoken.*;
 import com.google.gson.*;
-
 import Model.User;
-import RestServices.Login.LoginWrapper;
-
 import java.util.Date;
-
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Claims;
 

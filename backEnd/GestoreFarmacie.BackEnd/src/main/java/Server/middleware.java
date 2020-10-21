@@ -21,6 +21,7 @@ public class middleware implements ContainerRequestFilter{
 				
 				User u = Utility.getUserFromJWT(accessToken);
 				requestContext.setProperty("User",u);
+				System.out.println("Middleware ok");
 			}catch(Exception e) {
 				requestContext.abortWith(Response.status(401).build());
 			}

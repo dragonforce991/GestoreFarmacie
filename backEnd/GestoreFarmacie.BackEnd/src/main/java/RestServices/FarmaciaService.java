@@ -2,25 +2,19 @@ package RestServices;
 import java.sql.Connection;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.CookieParam;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
-
 import com.google.gson.Gson;
-
 import Database.Connect;
 import Database.FarmaciaManagement;
 import Database.UserManagement;
 import Model.Farmacia;
 import Model.User;
-import Model.UserWrapper;
 
 @Path("Farmacia")
 public class FarmaciaService {
@@ -36,28 +30,36 @@ public class FarmaciaService {
 	public Response insertFarmaciaAndUser(String jsonString,@Context ContainerRequestContext crc) {
 		Connection conn;
 		if(!((User)crc.getProperty("User")).getRole().getId().equals("1")) {
+			System.out.println("getrole =" + ((User)crc.getProperty("User")).getRole().getId());
 			return Response.status(402).build();
 		}
 		try {
 			 conn = Connect.getConnection();
 			 conn.setAutoCommit(false);
 		}catch(Exception e) {
-			return Response.status(400).entity(e).build();
+			return Response.status(500).entity(e).build();
 		}
-		
+		Gson g = new Gson();
+		UserManagement userManagement = new UserManagement();
+		FarmaciaManagement farmaciaManagement = new FarmaciaManagement();
+		Integer newFarmacia = null;
+		Boolean farmacia = false;
 		try {
-			Gson g = new Gson();
+			
 			FarmaciaUserWrapper fuw = g.fromJson(jsonString,FarmaciaUserWrapper.class);
-			UserManagement userManagement = new UserManagement();
-			FarmaciaManagement farmaciaManagement = new FarmaciaManagement();
-			Boolean newFarmacia = false;
-			Boolean newUser= userManagement.insertNewUser(fuw.user, fuw.user.getRole().getId(), fuw.user.getPassword());
-			if(newUser) {
-				User u = userManagement.getUser(fuw.user.getEmail(), fuw.user.getPassword()).getUser();
-				fuw.farmacia.setTitolare(u.getId());
-				newFarmacia = farmaciaManagement.insertFarmacia(fuw.farmacia);
+			if(!fuw.user.getRole().getId().equals("2")) {
+				return Response.status(402).build();
 			}
-			if(newUser && newFarmacia) {
+			Integer newUser= userManagement.insertNewUser(fuw.user, fuw.user.getRole().getId(), fuw.user.getPassword());
+			if(newUser != null) {
+				//User u = userManagement.getUser(fuw.user.getEmail(), fuw.user.getPassword()).getUser();
+				fuw.farmacia.setTitolare(String.valueOf(newUser));
+				newFarmacia = farmaciaManagement.insertFarmacia(fuw.farmacia);
+				if(newFarmacia!= null) {
+					farmacia = userManagement.setFarmacia(newUser,newFarmacia, conn);
+				}
+			}
+			if(newUser!= null && newFarmacia != null && farmacia) {
 				conn.commit();
 				return Response.status(200).build();
 			} else {

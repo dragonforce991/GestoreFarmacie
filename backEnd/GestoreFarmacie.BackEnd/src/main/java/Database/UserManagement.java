@@ -1,9 +1,10 @@
 package Database;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
-
-import com.mysql.jdbc.PreparedStatement;
+import java.sql.Types;
+import java.sql.PreparedStatement;
 
 
 import Model.UserWrapper;
@@ -12,6 +13,19 @@ import Model.User;
 import Model.Pages;
 import Model.Role;
 public class UserManagement {
+	
+	public Boolean setFarmacia(int userId, int farmaciaId, Connection conn) {
+		try{
+			PreparedStatement stmt = (PreparedStatement) conn.prepareStatement("UPDATE USER SET Farmacia = (?) WHERE Id = (?)");
+			stmt.setInt(1, farmaciaId);
+			stmt.setInt(2, userId);
+			stmt.execute();
+			return true;
+		}catch(Exception e) {
+			return false;
+		}
+		
+	}
 	public User getUserFromAccessToken(String value) {
 		User u = Utility.getUserFromJWT(value);
 		return u;
@@ -93,30 +107,34 @@ public class UserManagement {
 		return pages;
 		
 	}
-	public Boolean insertNewUser(User u,String Role,String password) {
+	public Integer insertNewUser(User u,String Role,String password) {
 		try {
 			return insertNewUser(u,Role,password,Connect.getConnection());
 		}catch(Exception e) {
-			return false;
+			return null;
 		}
 	}
-	public Boolean insertNewUser(User u,String Role,String password,Connection conn) {
+	public Integer insertNewUser(User u,String Role,String password,Connection conn) {
 		try {
-			PreparedStatement stmt =(PreparedStatement) conn.prepareStatement("Insert into user(name,surname,email,Phone_Number,Role,Password,Farmacia) values(?,?,?,?,?,?,?)");
-			
+			PreparedStatement stmt =(PreparedStatement) conn.prepareStatement("Insert into user(name,surname,email,Phone_Number,Role,Password,Farmacia) values(?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, u.getName());
-			stmt.setString(2, u.getSurname());
+			stmt.setString(2, u.getSurname());			
 			stmt.setString(3, u.getEmail());
 			stmt.setString(4, u.getPhone_number());
 			stmt.setString(5, Role);
 			stmt.setString(6, password);
-			stmt.setInt(7, u.getFarmacia());
-			
+			if(u.getFarmacia() != null)
+				stmt.setInt(7, u.getFarmacia());
+			else 
+				stmt.setNull(7, Types.INTEGER);
 			stmt.execute();
-			return true;
+			ResultSet generatedKeys = stmt.getGeneratedKeys();
+			generatedKeys.next();
+			return generatedKeys.getInt(1);
+
 		}catch(Exception e) {
 			System.out.println(e);
-			return false;
+			return null;
 		}
 	}
 }
