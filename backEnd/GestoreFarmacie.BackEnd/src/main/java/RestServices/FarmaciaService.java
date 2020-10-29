@@ -1,7 +1,9 @@
 package RestServices;
 import java.sql.Connection;
+import java.util.ArrayList;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -19,6 +21,27 @@ import Model.User;
 @Path("Farmacia")
 public class FarmaciaService {
 
+	@GET
+	@Path("getFarmacie")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getFarmacie(ContainerRequestContext crc) {
+		User u = (User) crc.getProperty("User");
+		if(!u.getRole().getId().equals("1"))
+			return Response.status(401).entity("Non sei autorizzato ad accedere alla risorsa").build();
+		try {
+			FarmaciaManagement farmaciaManagement = new FarmaciaManagement();
+			ArrayList<Farmacia> farmaciaList = farmaciaManagement.getFarmacie();
+			if(farmaciaList != null)
+				return Response.status(200).entity(farmaciaList).build();
+			return Response.status(500).build();
+		}catch(Exception e) {
+			System.out.println(e);
+			return Response.status(500).entity(e).build();
+		}
+	}
+	
+	
+	
 	public class FarmaciaUserWrapper{
 		public Farmacia farmacia;
 		public User user;

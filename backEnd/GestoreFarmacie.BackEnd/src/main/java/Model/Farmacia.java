@@ -16,6 +16,7 @@ public class Farmacia {
 		this.Telefono = telefono;
 		this.Titolare = titolare;
 	}
+	public Farmacia() {	}
 	public String getId() {
 		return Id;
 	}

@@ -3,6 +3,12 @@ package RestServices;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.time.LocalDate;
+import java.time.ZoneId;
+
 import io.jsonwebtoken.*;
 import com.google.gson.*;
 import Model.User;
@@ -57,5 +63,53 @@ public class Utility {
 		Gson g = new Gson();
 		User user= g.fromJson(claims.getSubject(), User.class);
 		return user;
+	}
+	
+	public static LocalDate fromDateToLocalDate(Date d) {
+			if(d == null ) return null;
+			return d.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	}
+	public static void setStatement(PreparedStatement stmt, int index, Float value) throws SQLException {
+		if(value != null) {
+			stmt.setFloat(index, value);
+		}else {
+			stmt.setNull(index, Types.VARCHAR);
+		}
+	}
+	public static void setStatement(PreparedStatement stmt, int index, String value) throws SQLException {
+		if(value != null) {
+			stmt.setString(index, value);
+		}else {
+			stmt.setNull(index, Types.VARCHAR);
+		}
+	}
+	public static void setStatement(PreparedStatement stmt, int index, Date value) throws SQLException {
+		if(value != null) {
+			
+			stmt.setObject(index, fromDateToLocalDate(value));
+		}else {
+			stmt.setNull(index, Types.VARCHAR);
+		}
+	}
+	public static void setStatement(PreparedStatement stmt, int index, Integer value) throws SQLException {
+		if(value != null) {
+			stmt.setInt(index, value);
+		}else {
+			stmt.setNull(index, Types.VARCHAR);
+		}
+	}
+	public static void setStatement(PreparedStatement stmt, int index, LocalDate value) throws SQLException {
+		if(value != null) {
+			stmt.setObject(index, value);
+		}else {
+			stmt.setNull(index, Types.VARCHAR);
+		}
+	}
+	public static void setStatement(PreparedStatement stmt, int index, Boolean value) throws SQLException {
+		if(value != null) {
+			stmt.setBoolean(index, value);
+		}else {
+			stmt.setNull(index, Types.VARCHAR);
+		}
 	}
 }
