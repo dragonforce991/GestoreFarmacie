@@ -83,7 +83,7 @@ export default {
       this.errorMessage = "";
 
       try {
-        const response = await this.$axios.$post('/auth/Login', { email: this.email, password: this.password });
+        const response = await this.$axios.$post('/Login', { email: this.email, password: this.password });
         this.$emit("loggedIn", response);
       } catch (e) {
         if (e.response.status !== 500) {
