@@ -24,7 +24,7 @@ public class FarmaciaService {
 	@GET
 	@Path("getFarmacie")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getFarmacie(ContainerRequestContext crc) {
+	public Response getFarmacie(@Context ContainerRequestContext crc) {
 		User u = (User) crc.getProperty("User");
 		if(!u.getRole().getId().equals("1"))
 			return Response.status(401).entity("Non sei autorizzato ad accedere alla risorsa").build();

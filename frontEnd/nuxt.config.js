@@ -24,6 +24,8 @@ export default {
     '~/plugins/notifier.js',
     '~/plugins/rules.js',
     '~/plugins/advancedVuetify.js',
+    '~/plugins/firebase.js',
+    '~/plugins/filter.js'
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
