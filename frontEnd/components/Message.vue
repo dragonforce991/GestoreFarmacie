@@ -3,14 +3,7 @@
     justify="center"
     no-gutters
   >
-    <p
-      v-if="isSystemMessage"
-      class="text-center font-italic system"
-    >
-      {{ message.text }}
-    </p>
     <v-col
-      v-else
       class="msg-wrapper"
     >
       <v-row
@@ -20,13 +13,13 @@
         :class="{ owner }"
       >
         <v-col>
-          <span class="font-weight-bold">{{ message.name }}</span>
+          <span class="font-weight-bold">{{ message.fullName }}</span>
           <p class="mb-0">
-            {{ message.text }}
+            {{ message.message }}
           </p>
         </v-col>
         <v-col cols="auto">
-          <span class="msg__date ml-3">{{ message.time }}</span>
+          <span class="msg__date ml-3">{{ message.createdAt }}</span>
         </v-col>
       </v-row>
     </v-col>
@@ -44,11 +37,9 @@ export default {
       type: Boolean,
     },
   },
-  computed: {
-    isSystemMessage() {
-      return this.message.name === "admin";
-    },
-  },
+  created(){
+    console.log(this.message);
+  }
 };
 </script>
 

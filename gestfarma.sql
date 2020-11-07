@@ -159,7 +159,7 @@ CREATE TABLE `pages` (
   `canDelete` tinyint DEFAULT NULL,
   `canModify` tinyint DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -168,7 +168,7 @@ CREATE TABLE `pages` (
 
 LOCK TABLES `pages` WRITE;
 /*!40000 ALTER TABLE `pages` DISABLE KEYS */;
-INSERT INTO `pages` VALUES (1,'/dashboard/users','mdi-factory','Users','Utenti',1,1,1),(2,'/dashboard/farmacia','mdi-factory','Gestione','Gestione',1,1,1),(3,'/dashboard/','mdi-factory','Home','Home',1,1,1);
+INSERT INTO `pages` VALUES (1,'/dashboard/users','mdi-factory','Users','Utenti',1,1,1),(2,'/dashboard/farmacia','mdi-factory','Gestione','Gestione',1,1,1),(3,'/dashboard/','mdi-factory','Home','Home',1,1,1),(4,'/dashboard/chat','mdi-factory','Chat','Chat',1,1,1);
 /*!40000 ALTER TABLE `pages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -188,7 +188,7 @@ CREATE TABLE `pagesrole__r` (
   KEY `Page_idx` (`IdPage`),
   CONSTRAINT `Page` FOREIGN KEY (`IdPage`) REFERENCES `pages` (`Id`),
   CONSTRAINT `role` FOREIGN KEY (`IdRole`) REFERENCES `role` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -197,7 +197,7 @@ CREATE TABLE `pagesrole__r` (
 
 LOCK TABLES `pagesrole__r` WRITE;
 /*!40000 ALTER TABLE `pagesrole__r` DISABLE KEYS */;
-INSERT INTO `pagesrole__r` VALUES (1,1,1),(2,2,1),(3,3,1);
+INSERT INTO `pagesrole__r` VALUES (1,1,1),(2,2,1),(3,3,1),(4,1,2),(5,2,2),(6,3,2),(7,4,2);
 /*!40000 ALTER TABLE `pagesrole__r` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -334,4 +334,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-10-30  0:56:18
+-- Dump completed on 2020-11-07 15:31:22
