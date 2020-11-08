@@ -12,6 +12,7 @@
       @input="typing"
       @click:append="send"
       @blur="resetValidation"
+      @keyup.enter="send"
     />
   </v-form>
 </template>
@@ -29,13 +30,8 @@ export default {
   methods: {
     //...mapActions(["createMessage", "setTypingStatus"]),
     send() {
-      /*if (this.$refs.form.validate()) {
-        this.createMessage(this.text); //push message on firebase
-        this.text = ""; 
-
-        this.setTypingStatus(false); //insieme a questo
-        this.resetValidation();
-      }*/
+      this.$emit("sendMessage",this.text);
+      this.text = "";
     },
     resetValidation() {
       this.$refs.form.resetValidation();

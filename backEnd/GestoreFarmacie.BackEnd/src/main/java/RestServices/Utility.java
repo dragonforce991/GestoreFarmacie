@@ -109,7 +109,7 @@ public class Utility {
 		if(value != null) {
 			stmt.setBoolean(index, value);
 		}else {
-			stmt.setNull(index, Types.VARCHAR);
+			stmt.setBoolean(index, false);
 		}
 	}
 }

@@ -61,6 +61,10 @@
       <nuxt />
     </v-main>
 
+    <v-slide-y-transition>
+      <OperationalAppBar key="appBar" v-if="$store.state.appBar.visible"></OperationalAppBar>
+    </v-slide-y-transition>
+
     <snackbar></snackbar>
 
     <simple-confirmation-dialog @result="result" ref="confirmationDialog" title="Conferma operazione" description="Sei sicuro di voler uscire ?" negativeButtonText="Annulla" positiveButtonText="Conferma"></simple-confirmation-dialog>
@@ -68,9 +72,15 @@
 </template>
 
 <script>
+import OperationalAppBar from '~/components/dashboard/operational_app_bar';
+
 export default
 {
   middleware: 'auth',
+
+  components: {
+    OperationalAppBar,
+  },
 
   data()
 	{
