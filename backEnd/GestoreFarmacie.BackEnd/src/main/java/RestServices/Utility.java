@@ -67,7 +67,14 @@ public class Utility {
 	
 	public static LocalDate fromDateToLocalDate(Date d) {
 			if(d == null ) return null;
-			return d.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			try {
+				return d.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			}
+			catch(Exception e) {
+				System.out.println(e.getLocalizedMessage());
+				e.printStackTrace();
+				return null;
+			}
 	}
 	public static void setStatement(PreparedStatement stmt, int index, Float value) throws SQLException {
 		if(value != null) {
@@ -85,6 +92,7 @@ public class Utility {
 	}
 	public static void setStatement(PreparedStatement stmt, int index, Date value) throws SQLException {
 		if(value != null) {
+			//System.out.println(value);
 			
 			stmt.setObject(index, fromDateToLocalDate(value));
 		}else {

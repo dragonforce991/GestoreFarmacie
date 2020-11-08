@@ -1,5 +1,6 @@
 package RestServices;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import javax.ws.rs.Consumes;
@@ -13,6 +14,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 
 import Database.PazientiManagement;
 import Model.Paziente;
@@ -26,7 +31,12 @@ public class PazientiService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response insertPaziente(String jsonString,@Context ContainerRequestContext crc) {
 		try {
-			Gson g = new Gson();
+			Gson g = new GsonBuilder().registerTypeAdapter(LocalDate.class, new JsonDeserializer<LocalDate>() {
+                public LocalDate deserialize(JsonElement json, java.lang.reflect.Type type, JsonDeserializationContext jsonDeserializationContext) {
+                    System.out.println(LocalDate.parse(json.getAsJsonPrimitive().getAsString()));
+                    return LocalDate.parse(json.getAsJsonPrimitive().getAsString());
+                }
+            }).create();
 			Paziente p = g.fromJson(jsonString, Paziente.class);
 			PazientiManagement pazientiManagement = new PazientiManagement();
 			User u = (User) crc.getProperty("User");
