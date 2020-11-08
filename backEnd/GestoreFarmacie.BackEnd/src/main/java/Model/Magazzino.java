@@ -11,7 +11,10 @@ public class Magazzino {
 	 */
 	String idProdotto;
 	String idFarmacia;
+	String ProductName;
+	String ProductDescription;
 	
+	Prodotto Product;
 	
 	public Magazzino(String id, Integer quantita, String idProdotto, String idFarmacia) {
 		this.id = id;
@@ -45,5 +48,24 @@ public class Magazzino {
 		this.idFarmacia = idFarmacia;
 	}
 	
+	public void setProductName(String ProductName) {
+		this.ProductName = ProductName;
+	}
+	public void setProductDescription(String ProductDescription) {
+		this.ProductDescription = ProductDescription;
+	}
+	public String getProductName() {
+		return this.ProductName;
+	}
+	public String getProductDescription() {
+		return this.ProductDescription;
+	}
+	
+	public void setProduct(Prodotto Product) {
+		this.Product = Product;
+	}
+	public Prodotto getProduct() {
+		return this.Product;
+	}
 	
 }

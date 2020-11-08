@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import Model.Magazzino;
+import Model.Prodotto;
 import RestServices.Utility;
 
 public class MagazzinoManagement {
@@ -16,11 +17,14 @@ public class MagazzinoManagement {
 	public ArrayList<Magazzino> getMagazzino(String idFarmacia) {
 		try {
 			ArrayList<Magazzino> magList = new ArrayList<Magazzino>();
-			PreparedStatement stmt = (PreparedStatement) Connect.getConnection().prepareStatement("SELECT Id, IdProdotto, IdFarmacia,quantita FROM magazzino WHERE IdFarmacia = (?)");
+			PreparedStatement stmt = (PreparedStatement) Connect.getConnection().prepareStatement("SELECT magazzino.Id, magazzino.IdFarmacia,magazzino.quantita,\r\n"
+					+ "prodotti.*\r\n"
+					+ "FROM magazzino, prodotti WHERE IdFarmacia = (?) "
+					+ "AND magazzino.IdProdotto = prodotti.idProdotto");
 			Utility.setStatement(stmt,1, idFarmacia);
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()) {
-				magList.add(getMagazzinoFromResultSet(rs));
+				magList.add(getFullMagazzinoFromResultSet(rs));
 			}
 			return magList;
 		}catch(Exception e) {
@@ -28,6 +32,9 @@ public class MagazzinoManagement {
 			return null;
 		}
 	}
+	
+	
+	
 	public Magazzino insertSingleProduct(String IdProdotto, String IdFarmacia, Integer quantita,Connection conn) {
 		try {
 			Magazzino m;
@@ -133,10 +140,29 @@ public class MagazzinoManagement {
 	
 	private Magazzino getMagazzinoFromResultSet(ResultSet rs) throws SQLException {
 		Magazzino m = new Magazzino();
-		m.setIdProdotto(rs.getString("IdProdotto"));
+		m.setIdProdotto(rs.getString("idProdotto"));
 		m.setIdFarmacia(rs.getString("IdFarmacia"));
 		m.setId(rs.getString("Id"));
 		m.setQuantita(rs.getInt("quantita"));
+		
+		return m;
+	}
+	private Magazzino getFullMagazzinoFromResultSet(ResultSet rs) throws SQLException {
+		Magazzino m = new Magazzino();
+		m.setIdProdotto(rs.getString("prodotti.idProdotto"));
+		m.setIdFarmacia(rs.getString("magazzino.IdFarmacia"));
+		m.setId(rs.getString("magazzino.Id"));
+		m.setQuantita(rs.getInt("magazzino.quantita"));
+		Prodotto p = new Prodotto();
+		p.setAzienda(rs.getString("prodotti.Azienda"));
+		p.setCodice(rs.getString("prodotti.Codice"));
+		p.setCostoUnitario(rs.getFloat("prodotti.CostoUnitario"));
+		p.setDescizione(rs.getString("prodotti.Descizione"));
+		p.setIdProdotto(rs.getString("prodotti.idProdotto"));
+		p.setNome(rs.getString("prodotti.Nome"));
+		p.setObbligoRicetta(rs.getBoolean("prodotti.ObbligoRicetta"));
+		//p.setParoleChiave(rs.getString(""));
+		m.setProduct(p);
 		return m;
 	}
 }

@@ -1,10 +1,12 @@
 package Database;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import Model.Paziente;
 import RestServices.Utility;
@@ -31,6 +33,8 @@ public class PazientiManagement {
 			Utility.setStatement(stmt,4, p.getDataDiNascita());
 			Utility.setStatement(stmt,5,p.getOperatoreRegistrazione().getId());
 			Utility.setStatement(stmt,6,p.getTelefono());
+			System.out.println(p.getDataDiNascita());
+			System.out.println(stmt.toString());
 			stmt.execute();
 			ResultSet rs = stmt.getGeneratedKeys();
 			rs.next();
@@ -101,8 +105,13 @@ public class PazientiManagement {
 	
 	private Paziente getPazienteFromResultSet(ResultSet rs) throws SQLException {
 		Paziente p = new Paziente();
+		//DateFormat df = DateFormat.getDateInstance();
 		p.setCodice_Fiscale(rs.getString("Codice_Fiscale"));
-		p.setDataDiNascita(Utility.fromDateToLocalDate(rs.getDate("DataDiNascita")));
+		Date d = rs.getDate("DataDiNascita");
+		if(d != null) {
+			p.setDataDiNascita(d.toLocalDate());
+		}
+		
 		p.setCognome(rs.getString("Cognome"));
 		p.setNome(rs.getString("Nome"));
 		p.setIdPazienti(rs.getString("idPazienti"));

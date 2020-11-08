@@ -59,7 +59,7 @@ export default
   async asyncData({ $axios })
   {
     const patients = await $axios.$get('/Pazienti/getPazienti');
-
+    console.log(patients);
     return {
 
       headers:
@@ -82,6 +82,13 @@ export default
           text: 'Cognome',
           value: 'cognome',
           dataType: 'text',
+          caseSensitiveSelector: true
+        },
+
+        {
+          text: 'Data di nascita',
+          value: 'dataDiNascita',
+          dataType: 'date',
           caseSensitiveSelector: true
         },
 

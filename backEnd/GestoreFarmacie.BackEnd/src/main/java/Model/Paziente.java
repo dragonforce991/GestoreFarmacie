@@ -1,6 +1,9 @@
 package Model;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
+import java.util.TimeZone;
 
 
 
@@ -51,6 +54,7 @@ public class Paziente {
 		Cognome = cognome;
 	}
 	public LocalDate getDataDiNascita() {
+		
 		return DataDiNascita;
 	}
 	public void setDataDiNascita(LocalDate dataDiNascita) {

@@ -60,13 +60,20 @@ export default
   async asyncData({ $axios })
   {
     const products = await $axios.$get('/Magazzino/getMagazzino');
-
+    console.log(products);
     return {
       headers:
       [
         {
           text: 'Prodotto',
-          value: 'idProdotto',
+          value: 'product.nome',
+          dataType: 'text',
+          caseSensitiveSelector: true,
+        },
+
+        {
+          text: 'Descrizione',
+          value: 'product.descizione',
           dataType: 'text',
           caseSensitiveSelector: true,
         },
