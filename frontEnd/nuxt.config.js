@@ -37,11 +37,27 @@ export default {
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
   ],
-
-  // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
-    // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    [
+      '@nuxtjs/firebase',
+      {
+        config: {
+          apiKey: "AIzaSyAOGhGg-6AAeRp-2PciPsvyXDDaooamhhU",
+          authDomain: "gestorefarmaciechat.firebaseapp.com",
+          databaseURL: "https://gestorefarmaciechat.firebaseio.com",
+          projectId: "gestorefarmaciechat",
+          storageBucket: "gestorefarmaciechat.appspot.com",
+          messagingSenderId: "781009942511",
+          appId: "1:781009942511:web:86661eb9ed89f965e9681a"
+        },
+        services: {
+          firestore: {
+            memoryOnly: false
+          }
+        }
+      }
+    ]
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)

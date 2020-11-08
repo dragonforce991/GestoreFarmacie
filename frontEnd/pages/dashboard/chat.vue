@@ -1,60 +1,47 @@
 <template>
-<v-container> 
+  <div class = "wrapper"> 
         <v-navigation-drawer absolute right expand-on-hover >
           <v-list subheader>
             <div>
-              <div class = "left">
-                <v-subheader>Chat Recenti</v-subheader>
-              
-              </div>
-              <div class = "right">
-                    <v-dialog
-                      v-model="dialog"
-                      width="500"
-                    > 
-                    <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      color="primary"
-                      v-bind="attrs"
-                      v-on="on"
-                      small
-                    >
-                      +
-                    </v-btn>
-                  </template>
+              <v-subheader>Chat Recenti</v-subheader>
+              <v-divider></v-divider>
+                <v-dialog
+                  v-model="dialog"
+                  width="500"
+                > 
+              <v-card>
+                <v-card-title class="headline grey lighten-2">
+                  Nuovo
+                </v-card-title>
 
-                  <v-card>
-                    <v-card-title class="headline grey lighten-2">
-                      Nuovo
-                    </v-card-title>
-                    <v-list-item v-for="(u, index) in users" :key="`user-${index}`" >
-                      <v-checkbox
-                      v-model="u.selected"
-                      :label="u.name + u.surname"
-                      ></v-checkbox>
-                    </v-list-item>
-                    
-                    
-
-                    <v-divider></v-divider>
-
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        color="primary"
-                        
-                        @click="createNewChat"
-                      >
-                        Crea
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-                
-              </div>
+                <v-list-item v-for="(u, index) in users" :key="`user-${index}`" >
+                  <v-checkbox
+                  v-model="u.selected"
+                  :label="u.name + u.surname"
+                  ></v-checkbox>
+                </v-list-item>
+                <v-divider></v-divider>
+                <v-text-field
+                  v-show = "isGroupNameVisible"
+                  v-model="groupName"
+                  label="Nome Gruppo..."
+                  outlined
+                  :rules="rules"
+                />
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    :disabled="createDisabled"
+                    color="primary"
+                    @click="createNewChat"
+                  >
+                    Crea
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog> 
               
             </div>
-            
             <v-list-item class = "left" v-for="(u, index) in chats" :key="`user-${index}`" @click="setChat(u)">
               <v-list-item-icon>
                 <v-icon color='primary'>mdi-account-circle-outline</v-icon>
@@ -65,7 +52,9 @@
             </v-list-item>
           </v-list>
         </v-navigation-drawer>
-        <div class="mesgs">
+        <div
+        class="chat">
+          <div class="mesgs">
           <Message
             v-for="(message, index) in messages"
             :key="`message-${index}`"
@@ -73,13 +62,12 @@
             :owner="message.username === username"
           /> 
         </div>
+        </div>
+        
         <div class="chat__form"> 
-          <v-form
-          >
-          </v-form>
-           <ChatForm @sendMessage="saveMessage($event)"/> 
+           <ChatForm v-show = "actualChat != ''" @sendMessage="saveMessage($event)"/> 
         </div>     
-</v-container>
+  </div>
 
 </template>
 
@@ -100,8 +88,28 @@ export default {
       rules: [(v) => !!v || "Text is required"],
       actualChat: "",
       dialog : false,
-      users : []
+      users : [],
+      groupName : ''
     };
+  },
+    mounted()
+  {
+    this.$store.commit('appBar/setVisible', true);
+    this.$store.commit('appBar/setButtons', {
+      addButton: true,
+      deleteButton: false,
+      cloneButton: false,
+      excelButton: false,
+      printerButton: false,
+    });
+
+    this.focusSearchUnsubscriber = this.$store.subscribe((mutation) =>
+    {
+      switch (mutation.type)
+      {
+        case 'appBar/addClicked': this.add();	break;
+      }
+    });
   },
   created() {
     //this.prova();
@@ -114,10 +122,28 @@ export default {
     user() {
       return this.$store.state.user;
     },
+    isGroupNameVisible() {
+      var count = 0;
+      this.users.forEach(el => {
+        if (el.selected)
+          count ++;
+      })
+      return count>1;
+    },
+    createDisabled() {
+      if(this.isGroupNameVisible){
+        console.log(!!this.groupName);
+        return !(!!this.groupName);
+      }
+      return false;
+    }
+
   },
   methods: {
+    add(){
+      this.dialog = true;
+    },
     async setChat(user) {
-      console.log("user", user);
       const vm = this;
       if (user.isUser) {
         const chat = await db
@@ -136,7 +162,6 @@ export default {
           
       }
       if (!user.isUser) {
-        console.log("non user");
         const chat = await db.collection("chat").doc(user.id).get();
         db.collection("chat")
           .doc(user.id)
@@ -148,7 +173,6 @@ export default {
               allMessages.push(message.data());
             });
             vm.messages = allMessages;
-            console.log("messages", vm.messages);
           });
       }
       this.actualChat = user.id;
@@ -166,22 +190,20 @@ export default {
         a.every((val, index) => val === b[index]);
     },
     async createNewChat() {
-      var fullName
+      var fullNameOtherUser
       const selected = []
       this.users.forEach((el) =>{
-        if(el.selected)
+        if(el.selected){
+          fullNameOtherUser = el.name + " " + el.surname
           selected.push(el.id)
+        }
         el.selected = false;
-        fullName = el.name + " " + el.surname
       })
       selected.push(this.username)
-      console.log(this.chats);
       var isError = false;
       this.chats.forEach(el => {
         if(this.arrayEquals(el.users,selected)){
           isError = true;
-        }else{
-          console.log(el.users, selected)
         }
       })
       if(isError){
@@ -197,46 +219,54 @@ export default {
       let newChat;
       if(selected.length == 2){
         newChat = {
-          Name : this.$store.state.user.name + " " + this.$store.state.user.surname +"-"+fullName,
+          Name : this.$store.state.user.name + " " + this.$store.state.user.surname +"-"+fullNameOtherUser,
           users : selected,
           createAt : new Date(),
           isGroup : false,
+          lastModified : new Date(),
+          lastModifiedBy : this.username
         }
       }else{
         newChat = {
-          Name : "provaGruppo",
+          Name : this.groupName,
           users : selected,
           createAt : new Date(),
           isGroup : true,
+          lastModified : new Date(),
+          lastModifiedBy : this.username
         }
       }
+      console.log('newChat',newChat);
+      console.log('Logged username',this.$store.state.user.name + " " + this.$store.state.user.surname);
+      console.log('Other username' , fullNameOtherUser)
       const rs = await db.collection('chat')
         .add(newChat);
       this.dialog = false;  
+      this.groupName = '';
     },
 
     async getChats() {
       try {
-        console.log(this.username)
         const vm = this;
         db
           .collection("chat")
           .where("users", "array-contains", this.username)
+          .orderBy("lastModified")
           .onSnapshot(query => {
             const chatArray = [];
             query.forEach(el =>{
               const v = el.data();
-              
               var name = v.Name.split("-")[0] === this.fullName ? v.Name.split("-")[1] : v.Name.split("-")[0]
-              chatArray.push({
+              chatArray.splice(0,0,{
                 name: name,
                 icon: v.isGroup ? "" : "mdi-account-circle",
                 isUser: v.isGroup ? false : true,
                 id: el.id,
                 users : v.users
               });
-             vm.chats = chatArray; 
+             
             })
+             vm.chats = chatArray;
           });
         
       } catch (e) {
@@ -262,6 +292,12 @@ export default {
           .collection("messaggi")
           .add(toInsert)
           .then(function (docRef) {
+            db.collection("chat")
+            .doc(vm.actualChat)
+            .update({
+              "lastModified" : new Date(),
+              "lastModifiedBy" : vm.username
+            })
             vm.message = null;
           })
           .catch(function (error) {
@@ -274,6 +310,11 @@ export default {
 };
 </script>
 <style scoped>
+.wrapper {
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
 .chat__form {
   position: absolute;
   bottom: 0;
@@ -281,10 +322,10 @@ export default {
   right: 0;
   padding: 1rem;
   height: 80px;
-  margin-right: 15%;
+  margin-right : 15%;
 }
 .mesgs {
-  margin-right: 12%;
+  margin-right: 15%;
 }
 .right {
   margin-top: 10px;
@@ -293,5 +334,15 @@ export default {
 }
 .left {
   float: left;
+}
+.chat {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 80px;
+  padding: 1rem;
+  overflow-y: auto;
+  color: #000;
 }
 </style>

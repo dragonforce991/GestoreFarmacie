@@ -222,7 +222,7 @@ export default
         else
           this.hide();
 
-        this.$notifier.showMessage('Importazione completata');
+        this.$notifier.showInfo('Importazione completata');
       }
       catch (e)
       {

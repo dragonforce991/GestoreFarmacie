@@ -21,22 +21,27 @@
                   v-mask="'AAAAAA##A##A###A'"
                   :rules="$rules.fiscalCodeRule"
                   dense outlined label="Codice Fiscale"
-                  v-model="patient.codice_Fiscale"
+                  v-model="patient.Codice_Fiscale"
                   counter="16"
                 />
               </v-col>
 
               <v-col cols="6">
-                <v-text-field :rules="$rules.basicRules" dense outlined label="Nome" v-model="patient.nome"></v-text-field>
+                <v-text-field :rules="$rules.basicRules" dense outlined label="Nome" v-model="patient.Nome"></v-text-field>
               </v-col>
 
               <v-col cols="6">
-                <v-text-field :rules="$rules.basicRules" dense outlined label="Cognome" v-model="patient.cognome"></v-text-field>
+                <v-text-field :rules="$rules.basicRules" dense outlined label="Cognome" v-model="patient.Cognome"></v-text-field>
               </v-col>
 
               <v-col cols="12">
-                <v-text-field :rules="$rules.basicRules" dense outlined label="Telefono" v-model="patient.telefono"></v-text-field>
+                <v-text-field :rules="$rules.basicRules" dense outlined label="Telefono" v-model="patient.Telefono"></v-text-field>
               </v-col>
+
+              <v-col cols="12">
+                <v-advanced-date-picker v-model="patient.DataDiNascita"></v-advanced-date-picker>
+              </v-col>
+
             </v-row>
           </v-form>
         </v-container>
@@ -59,7 +64,7 @@ export default
   async asyncData({ $axios })
   {
     const patients = await $axios.$get('/Pazienti/getPazienti');
-
+  console.log(patients);
     return {
 
       headers:
@@ -84,7 +89,11 @@ export default
           dataType: 'text',
           caseSensitiveSelector: true
         },
-
+        {
+          text: 'Data di Nascita',
+          value: 'dataDiNascita',
+          dataType: 'date',
+        },
         {
           text: 'Telefono',
           value: 'telefono',
@@ -139,16 +148,19 @@ export default
 
       try
       {
+        
         const response = await this.$axios.$post('/Pazienti/insert', this.patient);
-
+        console.log(this.patient);
         this.patients.push(response);
-        this.$notifier.showMessage('Paziente creato con successo');
+        this.$notifier.showInfo('Paziente creato con successo');
 
         this.loading = false;
+        this.dialog = false;
       }
       catch (e)
       {
-        this.$nuxt.error(e)
+        console.log(e);
+        //this.$nuxt.error(e)
       }
     }
   }

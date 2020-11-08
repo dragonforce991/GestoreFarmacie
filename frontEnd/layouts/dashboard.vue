@@ -73,7 +73,7 @@
 
 <script>
 import OperationalAppBar from '~/components/dashboard/operational_app_bar';
-
+import firebase from "~/plugins/firebase.js";
 export default
 {
   middleware: 'auth',
@@ -86,9 +86,44 @@ export default
 	{
 		return {
       drawer: true,
+      isMounted : false
 		}
   },
-
+  mounted(){
+      const db = this.$fire.firestore;
+      const username = this.$store.state.user.id;
+      db
+      .collection("chat")
+      .where("users", "array-contains", username)
+      .onSnapshot((querySnapshot) =>{
+        if(this.isMounted){
+          const changed = querySnapshot.docChanges()[0].doc.data()
+          if(changed.lastModifiedBy !== username){
+            if(querySnapshot.docChanges()[0].type == "added" && changed.isGroup){
+              let message = "Sei stato aggiunto al gruppo " + changed.Name;
+              this.$notifier.showInfo(message);
+            }
+            if(querySnapshot.docChanges()[0].type == "added" && !changed.isGroup){
+              const name = changed.Name.split("-")[0] == this.$store.state.user.name + " " + this.$store.state.user.cognome ? changed.Name.split("-")[1] : changed.Name.split("-")[0]
+              let message = "Nuova Chat : " + name;
+              this.$notifier.showInfo(message);
+            }
+            if(querySnapshot.docChanges()[0].type == "modified"){
+              if(changed.isGroup){
+                let message = "Nuovo messaggio in " + changed.Name;
+                this.$notifier.showInfo(message);
+              }else {
+                const name = changed.Name.split("-")[0] == this.$store.state.user.name + " " + this.$store.state.user.cognome ? changed.Name.split("-")[1] : changed.Name.split("-")[0]
+                let message = "Nuovo messaggio da " + name
+                this.$notifier.showInfo(message);
+              }
+            }  
+          }  
+        }
+        this.isMounted = true;
+      })
+    
+  },
   computed:
   {
     tree() {
@@ -107,9 +142,9 @@ export default
       return this.$store.state.title
     }
   },
-
   methods:
   {
+    
     async result(val)
     {
       this.$refs.confirmationDialog.hide();
