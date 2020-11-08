@@ -66,7 +66,14 @@ export default
       [
         {
           text: 'Prodotto',
-          value: 'idProdotto',
+          value: 'product.nome',
+          dataType: 'text',
+          caseSensitiveSelector: true,
+        },
+
+        {
+          text: 'Descrizione',
+          value: 'product.descizione',
           dataType: 'text',
           caseSensitiveSelector: true,
         },
