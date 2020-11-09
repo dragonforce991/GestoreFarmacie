@@ -41,6 +41,26 @@ public class UserServices {
 		}
 	}
 	
+	@GET
+	@Path("/getUsersChat")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getUsersChat(@Context ContainerRequestContext crc) {
+		try {
+			UserManagement userManagement = new UserManagement();
+			User u = (User) crc.getProperty("User");
+			ArrayList<User> uList = new ArrayList<User>();
+			if(u.getRole().getId().equals("1"))
+				uList = userManagement.getUsersChat(null, u);
+			else
+				uList = userManagement.getUsersChat(String.valueOf(u.getFarmacia()), u);
+			if(uList != null)
+				return Response.status(200).entity(uList).build();
+			return Response.status(400).build();
+		}catch(Exception e) {
+			return Response.status(500).build();
+		}
+	}
+	
 	
 	@GET
 	@Path("/getUserById")

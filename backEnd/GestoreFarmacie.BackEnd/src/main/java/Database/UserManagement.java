@@ -62,6 +62,51 @@ public class UserManagement {
 			return null;
 		}
 	}
+	
+	public ArrayList<User> getUsersChat(String idFarmacia, User CurrentUser){
+		ArrayList<User> userList = new ArrayList<User>();
+		try {
+			Connection conn = Connect.getConnection();
+			String sql = "Select name, Phone_Number, Role, surname, email, Id, farmacia from user where Id != (?) ";
+			if(idFarmacia != null) {
+				sql +="and farmacia = (?)";
+				if(!"2".equals(CurrentUser.getRole().getId())) {
+					sql += " and Role > '1'";
+				}
+			}
+			else {
+				sql += "and Role <= '2'";
+			}
+			PreparedStatement stmt = (PreparedStatement) conn.prepareStatement(sql);
+			Utility.setStatement(stmt,1, CurrentUser.getId());
+			if(idFarmacia != null)
+				Utility.setStatement(stmt,2, idFarmacia);
+			ResultSet rs = stmt.executeQuery();
+			String Role=null;
+			while (rs.next()) {
+				User user = new User();
+				user.setName(rs.getString("name"));
+				user.setPhone_number(rs.getString("Phone_Number"));
+				Role = rs.getString("Role");
+				user.setSurname(rs.getString("surname"));
+				user.setEmail(rs.getString("email"));
+				user.setId(rs.getString("Id"));
+				user.setFarmacia(rs.getInt("farmacia"));
+				if(Role != null) {
+					Role r = new Role();
+					r.setId(Role);
+					user.setRole(r);
+				}
+				userList.add(user);
+			}
+			
+			return userList;
+		}catch(Exception e ) {
+			System.out.println(e);
+			return null;
+		}
+	}
+	
 	public User getUser(String id) {
 		User user=null;
 		try {
