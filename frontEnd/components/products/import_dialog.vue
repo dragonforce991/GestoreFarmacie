@@ -6,7 +6,7 @@
           <v-icon>mdi-close</v-icon>
         </v-btn>
 
-        {{ areThereCustomersNotValid ? 'Prodotti non importati' : 'Importazione prodotti'}}
+        {{ areThereCustomersNotValid ? 'Movimenti non importati' : 'Importazione movimenti'}}
       </v-card-title>
 
       <v-form v-model="validForm">
@@ -222,7 +222,7 @@ export default
         else
           this.hide();
 
-        this.$notifier.showInfo('Importazione completata');
+        this.$notifier.showMessage('Importazione completata');
       }
       catch (e)
       {

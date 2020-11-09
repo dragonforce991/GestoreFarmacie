@@ -18,6 +18,13 @@ export default (context, inject) =>
       v => !!v || 'Campo richiesto',
       v => v > 0 || 'Valore maggiore a 0'
     ],
+    maxNumberRules: (maxValue) => {
+      return [
+        v => !!v || 'Campo richiesto',
+        v => v > 0 || 'Valore maggiore a 0',
+        v => v <= Number(maxValue) || ''
+      ]
+    }
   }
 
   inject('rules', rules)

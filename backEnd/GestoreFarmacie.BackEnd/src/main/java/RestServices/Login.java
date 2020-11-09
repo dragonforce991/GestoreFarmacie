@@ -28,34 +28,9 @@ public class Login {
 	 		LoginWrapper wrapper= g.fromJson(jsonString, LoginWrapper.class);
 	 		UserManagement userManagement = new UserManagement();
 	 		UserWrapper userWrapper = userManagement.getUser(wrapper.email, wrapper.password);
-	        NewCookie cookie = new NewCookie("accessToken", userWrapper.getAccessToken());
+	        NewCookie cookie = new NewCookie("accessToken", userWrapper.getAccessToken(), "/", "localhost", "", 3600 * 24, false, true);
 	        return Response.status(200).entity(userWrapper).cookie(cookie).build();
 	    }
-	 	
-	 	@GET
-		@Path("/getUsers")
-		@Produces(MediaType.APPLICATION_JSON)
-		public Response getUsers(@Context ContainerRequestContext crc) {
-			try {
-				UserManagement userManagement = new UserManagement();
-				
-				User u = (User) crc.getProperty("User");
-				ArrayList<User> uList = new ArrayList<User>();
-				if(u.getRole().getId().equals("1"))
-					uList = userManagement.getUsers(null);
-				else
-					uList = userManagement.getUsers(String.valueOf(u.getFarmacia()));
-				System.out.println(uList);
-				
-				if(uList != null)
-					return Response.status(200).entity(uList).build();
-				return Response.status(400).build();
-			}catch(Exception e) {
-				System.out.println(e.getMessage());
-				return Response.status(500).build();
-			}
-		}
-	 	
 	 	
 	 	public class LoginWrapper{
 	 		String email;

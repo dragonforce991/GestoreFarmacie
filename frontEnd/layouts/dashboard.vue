@@ -2,9 +2,7 @@
   <v-app style="background: white">
     <v-navigation-drawer app enable-resize-watcher v-model="drawer" width="280">
       <v-list expand>
-        <span v-for="page in tree" :key="page.id">
-          <drawer-element :item="page"></drawer-element>
-        </span>
+        <drawer-element v-for="page in tree" :key="page.id" :item="page" />
       </v-list>
     </v-navigation-drawer>
 
@@ -65,9 +63,12 @@
       <OperationalAppBar key="appBar" v-if="$store.state.appBar.visible"></OperationalAppBar>
     </v-slide-y-transition>
 
-    <snackbar></snackbar>
+    <snackbar />
 
-    <simple-confirmation-dialog @result="result" ref="confirmationDialog" title="Conferma operazione" description="Sei sicuro di voler uscire ?" negativeButtonText="Annulla" positiveButtonText="Conferma"></simple-confirmation-dialog>
+    <simple-confirmation-dialog
+      @result="result" ref="confirmationDialog"
+      title="Conferma operazione" description="Sei sicuro di voler uscire ?"
+      negativeButtonText="Annulla" positiveButtonText="Conferma" />
   </v-app>
 </template>
 
@@ -144,7 +145,6 @@ export default
   },
   methods:
   {
-    
     async result(val)
     {
       this.$refs.confirmationDialog.hide();
@@ -186,7 +186,6 @@ li {
   cursor: pointer;
 }
 li:hover,
-li.nuxt-link-active,
 li.nuxt-link-exact-active {
   background-color: #F6F6F6;
 }
