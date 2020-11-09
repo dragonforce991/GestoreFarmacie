@@ -1,12 +1,12 @@
 <template>
   <v-container>
-    <v-advanced-table ref="table" @selected="selected = $event" dense outlined :columns="headers" v-model="products" />
+    <v-advanced-table ref="table" @selected="selected = $event" dense outlined :columns="headers" v-model="movements" />
 
     <v-dialog v-model="dialog" width="700" :persistent="loading">
       <v-card>
         <v-toolbar class="elevation-0 white--text" color="primary">
-          <v-btn color="white" @click="dialog = false" icon><v-icon>mdi-close</v-icon></v-btn>
-          <v-toolbar-title>Nuovo Prodotto</v-toolbar-title>
+          <v-btn color="white" :disabled="loading" @click="dialog = false" icon><v-icon>mdi-close</v-icon></v-btn>
+          <v-toolbar-title>Nuovo Movimento</v-toolbar-title>
 
           <v-spacer></v-spacer>
 
@@ -16,6 +16,30 @@
         <v-container>
           <v-form v-model="validForm">
             <v-row dense>
+              <v-col cols="3">
+                <v-checkbox class="mt-1" label="Nuovo Prodotto" v-model="newProduct" />
+              </v-col>
+
+              <v-col cols="9" v-if="!newProduct">
+                <v-combobox
+                  :rules="$rules.basicRules"
+                  outlined dense label="Prodotto"
+                  v-model="movement.product" :items="products"
+                  item-text="nome" item-value="idProdotto" />
+              </v-col>
+
+              <v-col cols="12">
+                <v-text-field
+                  :rules="$rules.basicRules"
+                  type="number" dense outlined
+                  label="Quantità" v-model.number="movement.quantita" />
+              </v-col>
+
+              <v-row dense v-if="newProduct">
+                <v-col cols="12">
+                  <v-banner>Dati nuovo prodotto</v-banner>
+                </v-col>
+
               <v-col cols="12">
                 <v-checkbox dense outlined label="Obbligo Ricetta" v-model="product.ObbligoRicetta"></v-checkbox>
               </v-col>
@@ -37,8 +61,23 @@
               </v-col>
 
               <v-col cols="12">
-                <v-textarea dense outlined label="Descrizione" v-model="product.Descrizione"></v-textarea>
+                  <v-combobox :rules="$rules.basicRules" v-model="product.ParoleChiave" :items="[]" hide-selected dense outlined label="Parole Chiave" multiple persistent-hint small-chips clearable>
+                    <template v-slot:no-data>
+                      <v-list-item>
+                        <v-list-item-content>
+                          <v-list-item-title>
+                            Premi <kbd>invio</kbd> per aggiungere un elemento
+                          </v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </template>
+                  </v-combobox>
               </v-col>
+
+                <v-col cols="12">
+                  <v-textarea dense outlined label="Descrizione" v-model="movement.Descrizione"></v-textarea>
+                </v-col>
+              </v-row>
             </v-row>
           </v-form>
         </v-container>
@@ -54,26 +93,23 @@ import Import_dialog from '@/components/products/import_dialog';
 
 export default
 {
-  components: {Import_dialog},
   layout: 'dashboard',
+
+  components: {
+    Import_dialog
+  },
 
   async asyncData({ $axios })
   {
-    const products = await $axios.$get('/Magazzino/getMagazzino');
+    const movements = await $axios.$get('/Magazzino/getMagazzino');
+    const products = await $axios.$get('/Product/getProducts');
 
     return {
       headers:
       [
         {
           text: 'Prodotto',
-          value: 'product.nome',
-          dataType: 'text',
-          caseSensitiveSelector: true,
-        },
-
-        {
-          text: 'Descrizione',
-          value: 'product.descizione',
+          value: 'idProdotto',
           dataType: 'text',
           caseSensitiveSelector: true,
         },
@@ -87,14 +123,17 @@ export default
       ],
 
       products,
+      movements
     }
   },
 
   data()
   {
     return {
-      product: {},
+      movement: {},
       selected: [],
+
+      newProduct: false, product: {},
 
       loading: false, dialog: false, validForm: false
     }
@@ -132,7 +171,7 @@ export default
     add()
     {
       this.dialog = true;
-      this.product = {};
+      this.movement = this.product = {};
     },
 
     async create()
@@ -141,14 +180,24 @@ export default
 
       try
       {
-        this.product.ParoleChiave = []
+        this.product.ObbligoRicetta = !!this.product.ObbligoRicetta
 
-        const response = await this.$axios.$post('/Product/insertProduct', this.product);
-        this.product = {...this.product, id : response}
-        this.products.push(this.product);
-        this.$notifier.showInfo('Prodotto creato con successo');
-        this.loading = false;
-        this.dialog = false;
+        if(this.newProduct)
+        {
+          this.product.idProdotto = await this.$axios.$post('/Product/insertProduct', this.product);
+          this.products.push(this.product)
+          this.movement.product = this.product
+        }
+
+        await this.$axios.$post('Magazzino/insertProduct', {
+          idProdotto: this.movement.product.idProdotto,
+          quantita: this.movement.quantita
+        });
+
+        this.movements.push(this.movement);
+        this.$notifier.showInfo('Movimento creato con successo');
+
+        this.loading = this.dialog = false;
       }
       catch (e)
       {

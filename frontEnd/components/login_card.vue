@@ -1,6 +1,6 @@
 <template>
   <v-card elevation="4">
-    <v-container @keyup.enter = "login">
+    <v-container>
       <v-alert type="error" v-if="errorMessage !== ''">
         {{ errorMessage }}
       </v-alert>

@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-advanced-table dense outlined :columns="headers" v-model="patients" />
+    <v-advanced-table table-key="idPazienti" dense outlined :columns="headers" v-model="patients" />
 
     <v-dialog v-model="dialog" :persistent="loading" width="700">
       <v-card>
@@ -37,11 +37,6 @@
               <v-col cols="12">
                 <v-text-field :rules="$rules.basicRules" dense outlined label="Telefono" v-model="patient.Telefono"></v-text-field>
               </v-col>
-
-              <v-col cols="12">
-                <v-advanced-date-picker v-model="patient.DataDiNascita"></v-advanced-date-picker>
-              </v-col>
-
             </v-row>
           </v-form>
         </v-container>
@@ -64,7 +59,7 @@ export default
   async asyncData({ $axios })
   {
     const patients = await $axios.$get('/Pazienti/getPazienti');
-  console.log(patients);
+
     return {
 
       headers:
@@ -89,11 +84,7 @@ export default
           dataType: 'text',
           caseSensitiveSelector: true
         },
-        {
-          text: 'Data di Nascita',
-          value: 'dataDiNascita',
-          dataType: 'date',
-        },
+
         {
           text: 'Telefono',
           value: 'telefono',
@@ -148,19 +139,16 @@ export default
 
       try
       {
-        
         const response = await this.$axios.$post('/Pazienti/insert', this.patient);
-        console.log(this.patient);
+        
         this.patients.push(response);
-        this.$notifier.showInfo('Paziente creato con successo');
+        this.$notifier.showMessage('Paziente creato con successo');
 
         this.loading = false;
-        this.dialog = false;
       }
       catch (e)
       {
-        console.log(e);
-        //this.$nuxt.error(e)
+        this.$nuxt.error(e)
       }
     }
   }

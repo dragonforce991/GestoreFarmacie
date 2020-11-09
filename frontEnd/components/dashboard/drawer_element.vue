@@ -1,7 +1,6 @@
 <template>
   <div>
-    <span v-if="item.children && item.children.length > 0">
-      <v-list-group color="primary" :prepend-icon="item.icon">
+    <v-list-group v-if="item.children && item.children.length > 0" color="primary" :prepend-icon="item.icon">
         <template v-slot:activator>
           <v-list-item-content>
             <v-list-item-title style="font-weight: 500;">{{item.title}}</v-list-item-title>
@@ -10,9 +9,8 @@
 
         <v-icon slot="prependIcon">{{ item.icon }}</v-icon>
 
-        <drawer-element class="ml-4" v-for="(child, index) in item.children" :item="child" :key="index"></drawer-element>
+      <drawer-element class="ml-4" v-for="(child, index) in item.children" :item="child" :key="index" />
       </v-list-group>
-    </span>
 
     <nuxt-link v-else :to="item.url" tag="li">
       <v-list-item>

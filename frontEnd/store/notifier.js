@@ -4,7 +4,7 @@ export const state = () => ({
 
 export const mutations =
 {
-	showMessage (state, payload) {
+	showInfo (state, payload) {
 		state.notification.content = payload.content
 		state.notification.color = payload.color
 	},

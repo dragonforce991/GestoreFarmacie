@@ -11,6 +11,11 @@ export default {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: '' }
     ],
+
+    script: [
+      { src: "/color-scheme.min.js", defer: true }
+    ],
+
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
@@ -26,7 +31,10 @@ export default {
     '~/plugins/rules.js',
     '~/plugins/advancedVuetify.js',
     '~/plugins/firebase.js',
-    '~/plugins/filter.js'
+    '~/plugins/filter.js',
+    '~/plugins/statistics.js',
+    '~/plugins/filters.js',
+	{ src: '~/plugins/coreUI-charts.js', mode: 'client' }
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
