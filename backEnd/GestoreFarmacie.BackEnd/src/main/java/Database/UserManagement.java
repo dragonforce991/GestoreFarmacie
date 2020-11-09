@@ -26,17 +26,19 @@ public class UserManagement {
 		
 	}
 	
-	public ArrayList<User> getUsers(String idFarmacia){
+	public ArrayList<User> getUsers(String idFarmacia, User CurrentUser){
 		ArrayList<User> userList = new ArrayList<User>();
 		try {
 			Connection conn = Connect.getConnection();
-			String sql = "Select name, Phone_Number, Role, surname, email, Id, farmacia from user ";
+			String sql = "Select name, Phone_Number, Role, surname, email, Id, farmacia from user where id != (?) ";
 			if(idFarmacia != null) {
-				sql +="where farmacia = (?)"; 
+				sql +="and farmacia = (?)"; 
 			}
+			
 			PreparedStatement stmt = (PreparedStatement) conn.prepareStatement(sql);
+			Utility.setStatement(stmt,1, CurrentUser.getId());
 			if(idFarmacia != null)
-				Utility.setStatement(stmt,1, idFarmacia);
+				Utility.setStatement(stmt,2, idFarmacia);
 			ResultSet rs = stmt.executeQuery();
 			String Role=null;
 			while (rs.next()) {

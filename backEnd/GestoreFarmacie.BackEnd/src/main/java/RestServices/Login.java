@@ -42,9 +42,9 @@ public class Login {
 				User u = (User) crc.getProperty("User");
 				ArrayList<User> uList = new ArrayList<User>();
 				if(u.getRole().getId().equals("1"))
-					uList = userManagement.getUsers(null);
+					uList = userManagement.getUsers(null, u);
 				else
-					uList = userManagement.getUsers(String.valueOf(u.getFarmacia()));
+					uList = userManagement.getUsers(String.valueOf(u.getFarmacia()), u);
 				System.out.println(uList);
 				
 				if(uList != null)
