@@ -178,7 +178,7 @@ export default {
       this.actualChat = user.id;
     },
     async getUsers(){
-      const response = await this.$axios.$get("/user/getUsers");
+      const response = await this.$axios.$get("/user/getUsersChat");
       response.forEach(el => {
         this.users.push({...el, selected : false});
       })

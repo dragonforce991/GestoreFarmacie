@@ -40,4 +40,12 @@ public class Login {
 	 			this.password=password;
 	 		}
 	 	}
+	 	
+	 	@POST
+	 	@Path("/logout")
+	 	public Response logout(@Context ContainerRequestContext crc) {
+	 		NewCookie cookie =new NewCookie("accessToken", "", "/", "localhost", "", 0, false, true);
+	 		return Response.status(200).cookie(cookie).build();
+	 		
+	 	}
 }

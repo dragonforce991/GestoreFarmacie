@@ -153,11 +153,11 @@ export default
       {
         try
         {
-          await this.$axios.$post('/auth/logout');
+          await this.$axios.$post('/logout');
 
           this.$store.commit('auth/setUser', null);
           this.$store.commit('auth/setLoggedIn', false);
-
+          
           this.$router.go({ path: '/' })
         }
         catch (e)
