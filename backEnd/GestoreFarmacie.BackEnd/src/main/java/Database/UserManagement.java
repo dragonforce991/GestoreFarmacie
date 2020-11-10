@@ -30,7 +30,7 @@ public class UserManagement {
 		ArrayList<User> userList = new ArrayList<User>();
 		try {
 			Connection conn = Connect.getConnection();
-			String sql = "Select name, Phone_Number, Role, surname, email, Id, farmacia from user where id != (?) ";
+			String sql = "Select name, Phone_Number, Role, surname, email, User.Id, farmacia, farmacia.Nome from user inner join farmacia on Farmacia = Farmacia.Id  where User.id != (?) ";
 			if(idFarmacia != null) {
 				sql +="and farmacia = (?)"; 
 			}
@@ -50,6 +50,7 @@ public class UserManagement {
 				user.setEmail(rs.getString("email"));
 				user.setId(rs.getString("Id"));
 				user.setFarmacia(rs.getInt("farmacia"));
+				user.setNomeFarmacia(rs.getString("farmacia.Nome"));
 				if(Role != null) {
 					Role r = new Role();
 					r.setId(Role);
