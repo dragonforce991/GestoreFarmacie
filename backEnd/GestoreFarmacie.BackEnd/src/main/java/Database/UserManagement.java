@@ -75,6 +75,9 @@ public class UserManagement {
 				if(!"2".equals(CurrentUser.getRole().getId())) {
 					sql += " and Role > '1'";
 				}
+				else {
+					sql +=" or Role = '1'";
+				}
 			}
 			else {
 				sql += "and Role <= '2'";
