@@ -2,6 +2,7 @@ package RestServices;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -16,6 +17,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 
 import Database.AcquistoManagement;
 import Database.Connect;
@@ -79,7 +84,12 @@ public class AcquistiService {
 		try {
 			
 			User u = ((User)crc.getProperty("User"));
-			Gson g = new Gson();
+			Gson g = new GsonBuilder().registerTypeAdapter(LocalDate.class, new JsonDeserializer<LocalDate>() {
+                public LocalDate deserialize(JsonElement json, java.lang.reflect.Type type, JsonDeserializationContext jsonDeserializationContext) {
+                    System.out.println(LocalDate.parse(json.getAsJsonPrimitive().getAsString()));
+                    return LocalDate.parse(json.getAsJsonPrimitive().getAsString());
+                }
+            }).create();
 			Acquisto a = g.fromJson(jsonString,Acquisto.class);
 			ProdottiManagement pm = new ProdottiManagement();
 			HashMap<String,Prodotto> mapProdotti = new HashMap<String,Prodotto>();

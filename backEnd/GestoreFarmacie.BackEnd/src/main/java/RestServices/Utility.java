@@ -9,10 +9,11 @@ import java.sql.Types;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
+import java.sql.Date;
 import io.jsonwebtoken.*;
 import com.google.gson.*;
 import Model.User;
-import java.util.Date;
+//import java.util.Date;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Claims;
 
@@ -67,14 +68,7 @@ public class Utility {
 	
 	public static LocalDate fromDateToLocalDate(Date d) {
 			if(d == null ) return null;
-			try {
-				return d.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			}
-			catch(Exception e) {
-				System.out.println(e.getLocalizedMessage());
-				e.printStackTrace();
-				return null;
-			}
+			return d.toLocalDate();
 	}
 	public static void setStatement(PreparedStatement stmt, int index, Float value) throws SQLException {
 		if(value != null) {

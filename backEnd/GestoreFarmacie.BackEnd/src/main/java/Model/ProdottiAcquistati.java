@@ -1,6 +1,6 @@
 package Model;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class ProdottiAcquistati {
 	private String idAcquistiProdotti__r;
