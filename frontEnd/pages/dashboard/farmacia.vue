@@ -25,21 +25,24 @@
                   v-mask="'AAAAAA##A##A###A'"
                   :rules="$rules.fiscalCodeRule"
                   dense outlined label="Codice Fiscale"
-                  v-model="patient.codice_Fiscale"
+                  v-model="patient.Codice_Fiscale"
                   counter="16"
                 />
               </v-col>
-
+             
               <v-col cols="6">
-                <v-text-field :rules="$rules.basicRules" dense outlined label="Nome" v-model="patient.nome"></v-text-field>
+                <v-text-field :rules="$rules.basicRules" dense outlined label="Nome" v-model="patient.Nome"></v-text-field>
               </v-col>
 
               <v-col cols="6">
-                <v-text-field :rules="$rules.basicRules" dense outlined label="Cognome" v-model="patient.cognome"></v-text-field>
+                <v-text-field :rules="$rules.basicRules" dense outlined label="Cognome" v-model="patient.Cognome"></v-text-field>
               </v-col>
 
-              <v-col cols="12">
-                <v-text-field :rules="$rules.basicRules" dense outlined label="Telefono" v-model="patient.telefono"></v-text-field>
+              <v-col cols="6">
+                <v-text-field type="number" :rules="$rules.basicRules" dense outlined label="Telefono" v-model="patient.Telefono"></v-text-field>
+              </v-col>
+               <v-col cols="6">
+                <v-advanced-date-picker v-model="patient.DataDiNascita" dense outlined label="Data di nascita"></v-advanced-date-picker>
               </v-col>
             </v-row>
           </v-form>
@@ -72,7 +75,11 @@
                   :rules="$rules.basicRules"
                   outlined dense label="Paziente"
                   v-model="sale.patient" :items="patients"
-                  item-text="nome" item-value="idProdotto" />
+                  item-text="nome" item-value="idPaziente" @change="log">
+                  <template v-slot:item="{item}">
+                    {{ item.codice_Fiscale }} - {{item.nome}} {{item.cognome}}
+                  </template>
+                  </v-combobox>
               </v-col>
 
               <v-col cols="12">
@@ -190,6 +197,7 @@ export default
   async asyncData({ $axios })
   {
     const purchases = await $axios.$get('/Acquisti/getAcquisti');
+    console.log(purchases);
     const patients = await $axios.$get('/Pazienti/getPazienti');
     const warehouse = await $axios.$get('/Magazzino/getMagazzino');
 
@@ -270,6 +278,10 @@ export default
 
   methods:
   {
+    log(){
+      console.log(this.sale.patient);
+    },
+
     calcTotal(item)
     {
       const quantity = Number(item.quantity);
@@ -302,16 +314,18 @@ export default
       try
       {
         const response = await this.$axios.$post('/Pazienti/insert', this.patient);
-
         this.patients.push(response);
+        //console.log("pazienti",this.patients);
         this.sale.patient = response;
-        this.$notifier.showMessage('Paziente creato con successo');
-
+        this.patient= {};
+        this.$notifier.showInfo('Paziente creato con successo');
+        this.newCustomerDialog = false;
         this.loadingPatient = false;
       }
       catch (e)
       {
-        this.$nuxt.error(e)
+        console.log(e);
+        //this.$nuxt.error(e)
       }
     },
 

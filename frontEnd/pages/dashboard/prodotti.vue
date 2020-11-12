@@ -1,7 +1,11 @@
 <template>
   <v-container>
-    <v-advanced-table ref="table" @selected="selected = $event" dense outlined :columns="headers" v-model="movements" />
-
+    <v-advanced-table ref="table" @selected="selected = $event" dense outlined :columns="headers" v-model="movements" :slots="['product.obbligoRicetta']">
+      <template v-slot:product.obbligoRicetta="{ item }">
+        {{ item.product.obbligoRicetta == true ? "NO" : "SI"}}
+      </template>
+    </v-advanced-table>
+      
     <v-dialog v-model="dialog" width="700" :persistent="loading">
       <v-card>
         <v-toolbar class="elevation-0 white--text" color="primary">
@@ -103,17 +107,41 @@ export default
   {
     const movements = await $axios.$get('/Magazzino/getMagazzino');
     const products = await $axios.$get('/Product/getProducts');
+    console.log(products);
+    console.log(movements);
+
 
     return {
       headers:
       [
         {
           text: 'Prodotto',
-          value: 'idProdotto',
+          value: 'product.nome',
           dataType: 'text',
           caseSensitiveSelector: true,
         },
-
+        {
+          text: 'Descrizione',
+          value: 'product.descizione',
+          dataType: 'text',
+          caseSensitiveSelector: true,
+        },
+        {
+          text: 'Prezzo',
+          value: 'product.costoUnitario',
+          dataType: 'currency'
+        },
+        {
+          text: 'Codice',
+          value: 'product.codice',
+          dataType: 'text',
+          caseSensitiveSelector: true,
+        },
+        {
+          text: 'Ricetta',
+          value: 'product.obbligoRicetta',
+          dataType: 'boolean'
+        },
         {
           text: 'Qtà.',
           value: 'quantita',

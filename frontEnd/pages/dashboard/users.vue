@@ -21,7 +21,7 @@
             <v-row dense>
               <v-banner>User</v-banner>
               <v-col cols="12">
-                <v-text-field :rules="$rules.basicRules" type="text" dense outlined label="Email" v-model="user.email"></v-text-field>
+                <v-text-field :rules="$rules.emailRules" type="text" dense outlined label="Email" v-model="user.email"></v-text-field>
               </v-col>
               <v-col cols="6">
                 <v-text-field :rules="$rules.basicRules" type="text" dense outlined label="Nome" v-model="user.name"></v-text-field>
@@ -33,7 +33,7 @@
                 <v-text-field :rules="$rules.basicRules" type="text" dense outlined label="Telefono" v-model="user.phone_number"></v-text-field>
               </v-col>
               <v-col cols="6">
-                <v-text-field :rules="$rules.basicRules" type="text" dense outlined label="Password" v-model="user.password"></v-text-field>
+                <v-text-field :rules="$rules.basicRules" type="password" dense outlined label="Password" v-model="user.password"></v-text-field>
               </v-col>
               <v-col cols="6" v-if="$store.state.user.role.id!='1'">
                 <v-combobox

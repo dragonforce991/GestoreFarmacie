@@ -34,7 +34,7 @@
                 <v-text-field :rules="$rules.basicRules" dense outlined label="Cognome" v-model="patient.Cognome"></v-text-field>
               </v-col>
 
-              <v-col cols="12">
+              <v-col cols="6">
                 <v-text-field :rules="$rules.basicRules" dense outlined label="Telefono" v-model="patient.Telefono"></v-text-field>
               </v-col>
                <v-col cols="6">
