@@ -6,6 +6,47 @@
       </template>
     </v-advanced-table>
 
+    <v-dialog v-model="newCustomerDialog" :persistent="loadingPatient" width="500">
+      <v-card>
+        <v-toolbar color="primary white--text" class="elevation-0">
+          <v-btn color="white" @click="newCustomerDialog = false" icon><v-icon>mdi-close</v-icon></v-btn>
+          <v-toolbar-title>Nuovo Paziente</v-toolbar-title>
+
+          <v-spacer></v-spacer>
+
+          <v-btn color="white" text :disabled="!validForm" :loading="loadingPatient" @click="createPatient">Crea</v-btn>
+        </v-toolbar>
+
+        <v-container>
+          <v-form v-model="validForm">
+            <v-row dense>
+              <v-col cols="12">
+                <v-text-field
+                  v-mask="'AAAAAA##A##A###A'"
+                  :rules="$rules.fiscalCodeRule"
+                  dense outlined label="Codice Fiscale"
+                  v-model="patient.codice_Fiscale"
+                  counter="16"
+                />
+              </v-col>
+
+              <v-col cols="6">
+                <v-text-field :rules="$rules.basicRules" dense outlined label="Nome" v-model="patient.nome"></v-text-field>
+              </v-col>
+
+              <v-col cols="6">
+                <v-text-field :rules="$rules.basicRules" dense outlined label="Cognome" v-model="patient.cognome"></v-text-field>
+              </v-col>
+
+              <v-col cols="12">
+                <v-text-field :rules="$rules.basicRules" dense outlined label="Telefono" v-model="patient.telefono"></v-text-field>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-container>
+      </v-card>
+    </v-dialog>
+
     <v-dialog v-model="dialog" width="1200" :persistent="loading">
       <v-card>
         <v-toolbar class="elevation-0 white--text" color="primary">
@@ -20,7 +61,13 @@
         <v-container>
           <v-form v-model="validForm">
             <v-row dense>
-              <v-col cols="12">
+              <v-col cols="1">
+                <v-btn color="primary" icon @click="newCustomerDialog = true">
+                  <v-icon>mdi-plus</v-icon>
+                </v-btn>
+              </v-col>
+
+              <v-col cols="11">
                 <v-combobox
                   :rules="$rules.basicRules"
                   outlined dense label="Paziente"
@@ -34,7 +81,7 @@
                     <tr>
                       <th class="text-left subtitle-2">Prodotto</th>
                       <th class="text-left subtitle-2">Obb. Ricetta</th>
-                      <th class="text-left subtitle-2">Quantit�</th>
+                      <th class="text-left subtitle-2">Quantità</th>
                       <th class="text-left subtitle-2">Codice Regionale</th>
                       <th class="text-left subtitle-2">Data Ricetta</th>
                       <th class="text-left subtitle-2">Costo Unitario</th>
@@ -117,9 +164,15 @@
 </template>
 
 <script>
+import { mask } from 'vue-the-mask'
+
 export default 
 {
   layout: 'dashboard',
+
+  directives: {
+    mask,
+  },
 
   data()
   {
@@ -128,7 +181,8 @@ export default
 
       newSale: false, sale: { products: [] },
 
-      loading: false, dialog: false,
+      loading: false, dialog: false, loadingPatient: false,
+      newCustomerDialog: false,
       validForm: false, validDate: {}
     }
   },
@@ -148,6 +202,7 @@ export default
         return map;
       }, {}),
       patients,
+      patient: {},
 
       headers:
       [
@@ -238,6 +293,26 @@ export default
     {
       this.dialog = true;
       this.sale = { products: [] };
+    },
+
+    async createPatient()
+    {
+      this.loadingPatient = true
+
+      try
+      {
+        const response = await this.$axios.$post('/Pazienti/insert', this.patient);
+
+        this.patients.push(response);
+        this.sale.patient = response;
+        this.$notifier.showMessage('Paziente creato con successo');
+
+        this.loadingPatient = false;
+      }
+      catch (e)
+      {
+        this.$nuxt.error(e)
+      }
     },
 
     async create()

@@ -41,7 +41,7 @@ export default
 
     return {
       purchases,
-      selected :purchases,
+      selected:[],
       headers:
       [
         {
