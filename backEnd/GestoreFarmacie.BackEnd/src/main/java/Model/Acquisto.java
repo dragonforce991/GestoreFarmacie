@@ -12,6 +12,8 @@ public class Acquisto {
 	private LocalDate DataAcquisto;
 	private ArrayList<ProdottiAcquistatiFull> prodotti;
 	private String idFarmacia;
+	private Farmacia farmacia;
+	
 	public Acquisto(String acquisto, Paziente paziente, User user,float totale, LocalDate dataAcquisto) {
 		this.acquisto = acquisto;
 		this.paziente = paziente;
@@ -74,6 +76,11 @@ public class Acquisto {
 		this.idFarmacia = idFarmacia;
 	}
 	
-	
+	public void setFarmacia(Farmacia farmacia) {
+		this.farmacia = farmacia;
+	}
+	public Farmacia getFarmacia() {
+		return this.farmacia;
+	}
 	
 }
