@@ -11,6 +11,7 @@ public class User {
 	private Role role;
 	private Integer farmacia;
 	private String password;
+	private String nomeFarmacia;
 	
 	public User(String id, String full_name, String name, String surname, String email, String phone_number,
 			Role role) {
@@ -78,6 +79,12 @@ public class User {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public String getNomeFarmacia() {
+		return nomeFarmacia;
+	}
+	public void setNomeFarmacia(String nomeFarmacia) {
+		this.nomeFarmacia = nomeFarmacia;
 	}
 	
 	

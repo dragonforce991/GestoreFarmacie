@@ -34,7 +34,7 @@
                     <tr>
                       <th class="text-left subtitle-2">Prodotto</th>
                       <th class="text-left subtitle-2">Obb. Ricetta</th>
-                      <th class="text-left subtitle-2">Quantità</th>
+                      <th class="text-left subtitle-2">Quantitï¿½</th>
                       <th class="text-left subtitle-2">Codice Regionale</th>
                       <th class="text-left subtitle-2">Data Ricetta</th>
                       <th class="text-left subtitle-2">Costo Unitario</th>
@@ -152,6 +152,11 @@ export default
       headers:
       [
         {
+          text: 'Data Vendita',
+          value: 'dataAcquisto',
+          dataType: 'date',
+        },
+        {
           text: 'Utente',
           value: 'user.id',
           dataType: 'text',
@@ -242,6 +247,7 @@ export default
       try
       {
         await this.$axios.$post('Acquisti/newAcquisto', {
+          DataAcquisto : new Date(),
           paziente: { idPazienti: this.sale.patient.idPazienti },
           Totale: this.total,
           prodotti: this.sale.products.map(el => ({

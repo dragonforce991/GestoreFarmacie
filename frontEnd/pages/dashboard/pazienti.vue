@@ -25,7 +25,7 @@
                   counter="16"
                 />
               </v-col>
-
+             
               <v-col cols="6">
                 <v-text-field :rules="$rules.basicRules" dense outlined label="Nome" v-model="patient.Nome"></v-text-field>
               </v-col>
@@ -34,8 +34,11 @@
                 <v-text-field :rules="$rules.basicRules" dense outlined label="Cognome" v-model="patient.Cognome"></v-text-field>
               </v-col>
 
-              <v-col cols="12">
+              <v-col cols="6">
                 <v-text-field :rules="$rules.basicRules" dense outlined label="Telefono" v-model="patient.Telefono"></v-text-field>
+              </v-col>
+               <v-col cols="6">
+                <v-advanced-date-picker v-model="patient.DataDiNascita" dense outlined label="Data di nascita"></v-advanced-date-picker>
               </v-col>
             </v-row>
           </v-form>
@@ -89,7 +92,13 @@ export default
           text: 'Telefono',
           value: 'telefono',
           dataType: 'text',
-        }
+        },
+        {
+          text: 'Data Di Nascita',
+          value: 'dataDiNascita',
+          dataType: 'date',
+        },
+        
       ],
 
       patients,
@@ -141,14 +150,18 @@ export default
       {
         const response = await this.$axios.$post('/Pazienti/insert', this.patient);
         
-        this.patients.push(response);
-        this.$notifier.showMessage('Paziente creato con successo');
+        this.patients=await this.$axios.$get('/Pazienti/getPazienti');
+        this.$notifier.showInfo('Paziente creato con successo');
 
         this.loading = false;
+        this.dialog = false;
       }
       catch (e)
       {
-        this.$nuxt.error(e)
+        this.dialog = false;
+        this.loaging = false;
+        this.$notifier.showError("Errore. Verificare il codice fiscale del cliente");
+        console.log(e)
       }
     }
   }

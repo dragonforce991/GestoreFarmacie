@@ -29,7 +29,8 @@ public class Login {
 	 		UserManagement userManagement = new UserManagement();
 	 		UserWrapper userWrapper = userManagement.getUser(wrapper.email, wrapper.password);
 	        NewCookie cookie = new NewCookie("accessToken", userWrapper.getAccessToken(), "/", "localhost", "", 3600 * 24, false, true);
-	        return Response.status(200).entity(userWrapper).cookie(cookie).build();
+	        NewCookie postmanCookie = new NewCookie("accessToken", userWrapper.getAccessToken());
+	        return Response.status(200).entity(userWrapper).cookie(cookie).cookie(postmanCookie).build();
 	    }
 	 	
 	 	public class LoginWrapper{

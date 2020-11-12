@@ -2,7 +2,7 @@
   <v-container>
     <v-advanced-table :slots="['role']" ref="table" @selected="selected = $event" dense outlined :columns="headers" v-model="users" >
       <template v-slot:role="{item}">
-        {{item.role.id  == "1" ? "Regione" : "Titolare"}}
+        {{item.role.id  == "1" ? "Regione" : item.role.id == "2" ? "Titolare" : item.role.id == "3" ? "Operatore di banco" : "Dottore Farmacista"}}
       </template>
     </v-advanced-table>
 
@@ -24,7 +24,7 @@
                 <v-text-field :rules="$rules.basicRules" type="text" dense outlined label="Email" v-model="user.email"></v-text-field>
               </v-col>
               <v-col cols="6">
-                <v-text-field :rules="$rules.basicRules" type="text" dense outlined label="Nome" v-model="user.nome"></v-text-field>
+                <v-text-field :rules="$rules.basicRules" type="text" dense outlined label="Nome" v-model="user.name"></v-text-field>
               </v-col>
               <v-col cols="6">
                 <v-text-field :rules="$rules.basicRules" type="text" dense outlined label="Cognome" v-model="user.surname"></v-text-field>
@@ -35,7 +35,15 @@
               <v-col cols="6">
                 <v-text-field :rules="$rules.basicRules" type="text" dense outlined label="Password" v-model="user.password"></v-text-field>
               </v-col>
+              <v-col cols="6" v-if="$store.state.user.role.id!='1'">
+                <v-combobox
+                  :rules="$rules.basicRules"
+                  outlined dense label="Ruolo"
+                  v-model="user.role" :items="roles"
+                  item-text="label" item-value="value" />
+              </v-col>
               <v-row v-if="$store.state.user.role.id=='1'">
+              
                 <v-banner>Farmacia</v-banner>
                 <v-col cols="12">
                   <v-text-field :rules="$rules.basicRules" type="text" dense outlined label="Indirizzo" v-model="farmacia.Indirizzo"></v-text-field>
@@ -60,12 +68,8 @@
 export default 
 {
 
-  async asyncData({ $axios }){
-    const users = await $axios.$get('/user/getUsers');
-    //ritornare nome farmacia
-    console.log(users);
-    return {
-      headers:
+  async asyncData({ $axios, store  }){
+    var headers=
       [
         {
           text: 'Email',
@@ -73,17 +77,14 @@ export default
           dataType: 'text',
           caseSensitiveSelector: false,
         },
-
-        {
-          text: 'farmacia',
-          value: 'farmacia.name',
-          dataType: 'text',
-          caseSensitiveSelector: true,
-        },
-
         {
           text: 'Nome',
           value: 'name',
+          dataType: 'text',
+          caseSensitiveSelector: true,
+        },{
+          text: 'Cognome',
+          value: 'surname',
           dataType: 'text',
           caseSensitiveSelector: true,
         },
@@ -96,19 +97,29 @@ export default
         {
           text: 'Ruolo',
           value: 'role',
-          computedValue: (item) => item.role.id  == "1" ? "Regione" : "Titolare", 
-          dataType: 'text',
-          caseSensitiveSelector: true,
-        },
-        {
-          text: 'Cognome',
-          value: 'surname',
+          computedValue: (item) => item.role.id  == "1" ? "Regione" : item.role.id == "2" ? "Titolare" : item.role.id == "3" ? "Operatore di banco" : "Dottore Farmacista",
           dataType: 'text',
           caseSensitiveSelector: true,
         }
-      ],
-
+        
+      ]
+    const users = await $axios.$get('/user/getUsers');
+    const roles = [{value : "3", label: "Operatore di Banco"},{value : "4", label: "Dottore Farmacista"}]
+    if(store.state.user.role.id == '1'){
+      headers.push({
+          text: 'farmacia',
+          value: 'nomeFarmacia',
+          dataType: 'text',
+          groupBy : true,
+          caseSensitiveSelector: true,
+        })
+    }
+    
+    return {
+      
+      headers,
       users,
+      roles
     }
   },
   data()
@@ -162,12 +173,19 @@ export default
       try
       {
         var response;
-        if(this.$store.state.user.id == "1"){
+        if(this.$store.state.user.role.id == "1"){
+          console.log("qui");
+          this.user.role = {id : "2"};
           response = await this.$axios.$post('Farmacia/insert', {user : this.user, farmacia: this.farmacia});
         }else{
+          this.user.role.id  = this.user.role.value; 
+          console.log(this.user);
           response = await this.$axios.$post('/user/insert', this.user);
         }
-        location.reload();
+        this.users = await this.$axios.$get('/user/getUsers');
+        console.log(this.users);
+        this.loading = false;
+        this.dialog = false;
       }
       catch (e)
       {
@@ -175,6 +193,8 @@ export default
         this.$notifier.showError(e);
         // this.$nuxt.error(e)
       }
+        this.loading = false;
+        this.dialog = false;
     }
   },
   

@@ -94,6 +94,7 @@ public class UserServices {
 			}
 			if(LoggedUser.getRole().getId().equals("2") && !toInsert.getRole().getId().equals("1") && !toInsert.getRole().getId().equals("2") ) {
 				UserManagement userManagement = new UserManagement();
+				toInsert.setFarmacia(LoggedUser.getFarmacia());
 				Integer userId = userManagement.insertNewUser(toInsert, toInsert.getRole().getId(), toInsert.getPassword());
 				Integer state = userId != null ? 200 : 400;
 				String entity = state == 200 ? "OK" : "Errore generico";
