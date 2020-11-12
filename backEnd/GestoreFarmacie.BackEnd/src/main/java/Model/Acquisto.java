@@ -1,5 +1,6 @@
 package Model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -8,10 +9,10 @@ public class Acquisto {
 	private Paziente paziente;
 	private User user;
 	private float Totale;
-	private Date DataAcquisto;
+	private LocalDate DataAcquisto;
 	private ArrayList<ProdottiAcquistatiFull> prodotti;
 	private String idFarmacia;
-	public Acquisto(String acquisto, Paziente paziente, User user,float totale, Date dataAcquisto) {
+	public Acquisto(String acquisto, Paziente paziente, User user,float totale, LocalDate dataAcquisto) {
 		this.acquisto = acquisto;
 		this.paziente = paziente;
 		this.user = user;
@@ -20,7 +21,7 @@ public class Acquisto {
 		DataAcquisto = dataAcquisto;
 	}
 	public Acquisto(String acquisto, Paziente paziente, User user, 
-			float totale, Date dataAcquisto, ArrayList<ProdottiAcquistatiFull> prodotti) {
+			float totale, LocalDate dataAcquisto, ArrayList<ProdottiAcquistatiFull> prodotti) {
 		this.acquisto = acquisto;
 		this.paziente = paziente;
 		this.user = user;
@@ -54,10 +55,10 @@ public class Acquisto {
 	public void setTotale(float totale) {
 		Totale = totale;
 	}
-	public Date getDataAcquisto() {
+	public LocalDate getDataAcquisto() {
 		return DataAcquisto;
 	}
-	public void setDataAcquisto(Date dataAcquisto) {
+	public void setDataAcquisto(LocalDate dataAcquisto) {
 		DataAcquisto = dataAcquisto;
 	}
 	public ArrayList<ProdottiAcquistatiFull> getProdotti() {

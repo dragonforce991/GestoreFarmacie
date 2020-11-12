@@ -106,7 +106,7 @@ public class AcquistoManagement {
 				}else {
 					a = new Acquisto();
 					a.setAcquisto(idAcquisto);
-					a.setDataAcquisto(rs.getDate("DataAcquisto"));
+					a.setDataAcquisto(Utility.fromDateToLocalDate(rs.getDate("DataAcquisto")));
 					a.setIdFarmacia(rs.getString("IdFarmacia"));
 					Paziente p = new Paziente();
 					p.setIdPazienti(rs.getString("IdPaziente"));
