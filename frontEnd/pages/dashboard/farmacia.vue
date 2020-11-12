@@ -192,7 +192,7 @@ export default
     const purchases = await $axios.$get('/Acquisti/getAcquisti');
     const patients = await $axios.$get('/Pazienti/getPazienti');
     const warehouse = await $axios.$get('/Magazzino/getMagazzino');
-
+    console.log(purchases);
     return {
       purchases,
       products: warehouse.map(el => el.product),
@@ -213,7 +213,7 @@ export default
         },
         {
           text: 'Utente',
-          value: 'user.id',
+          value: 'user.full_name',
           dataType: 'text',
           groupBy: true,
         },

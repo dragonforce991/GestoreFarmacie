@@ -64,7 +64,7 @@ export default
       if(!this.sales)
         return []
 
-      const mappedSales = groupBy(this.sales, sale => sale.user.id);
+      const mappedSales = groupBy(this.sales, sale => sale.user.full_name);
 
       return Array.from(mappedSales).map(([key, value]) => ({ user: key, sales: value.length }));
     }

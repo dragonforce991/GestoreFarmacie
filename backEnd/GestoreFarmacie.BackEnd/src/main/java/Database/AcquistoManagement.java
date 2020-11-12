@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import Model.Acquisto;
+import Model.Farmacia;
 import Model.Paziente;
 import Model.ProdottiAcquistatiFull;
 import Model.Prodotto;
@@ -80,10 +81,11 @@ public class AcquistoManagement {
 	
 	public ArrayList<Acquisto> getAcquisti(String idFarmacia){
 		try {
-			String sql = "SELECT  IdPaziente, IdUser, Totale,DataAcquisto,IdFarmacia,IdAcquisto,IdProdotto,quantita FROM acquisti inner join acquistiprodotti__r on (idAcquisti = IdAcquisto)";
+			String sql = "SELECT  IdPaziente, IdUser, Totale,DataAcquisto,IdFarmacia,IdAcquisto,IdProdotto,quantita, user.name, user.surname, Farmacia.Nome, Farmacia.Telefono FROM acquisti inner join acquistiprodotti__r on (idAcquisti = IdAcquisto), user , Farmacia WHERE idFarmacia = Farmacia.Id AND idUser = user.ID ";
 			if(idFarmacia != null) {
-				sql+= " WHERE idFarmacia = (?)";
+				sql+= "AND idFarmacia = (?)";
 			}
+			
 			HashMap <String,Prodotto> mapProdotti = new HashMap<String,Prodotto>();
 			HashMap <String,Acquisto> mapAcquisti = new HashMap<String,Acquisto>();
 			ProdottiManagement prodottiManagement = new ProdottiManagement();
@@ -107,13 +109,22 @@ public class AcquistoManagement {
 					a = new Acquisto();
 					a.setAcquisto(idAcquisto);
 					a.setDataAcquisto(Utility.fromDateToLocalDate(rs.getDate("DataAcquisto")));
+					
 					a.setIdFarmacia(rs.getString("IdFarmacia"));
+					Farmacia f = new Farmacia();
+					f.setNome(rs.getString("Farmacia.Nome"));
+					f.setTelefono(rs.getString("Farmacia.Telefono"));
+					f.setId(a.getIdFarmacia());
+					a.setFarmacia(f);
 					Paziente p = new Paziente();
 					p.setIdPazienti(rs.getString("IdPaziente"));
 					a.setPaziente(p);
 					a.setTotale(rs.getFloat("Totale"));
 					User u = new User();
 					u.setId(rs.getString("IdUser"));
+					u.setName(rs.getString("user.name"));
+					u.setSurname(rs.getString("user.surname"));
+					u.setFull_name(u.getName() + " " + u.getSurname());
 					a.setUser(u);
 				}
 				ArrayList<ProdottiAcquistatiFull> prodFullList = a.getProdotti();

@@ -46,7 +46,7 @@ export default
       [
         {
           text: 'Utente',
-          value: 'user.id',
+          value: 'user.full_name',
           dataType: 'text',
           groupBy: true,
         },
@@ -74,7 +74,7 @@ export default
       console.log(this.purchases)
       this.headers = [{
         text: 'Farmacia',
-        value: 'idFarmacia',
+        value: 'farmacia.nome',
         dataType: 'text',
         groupBy: true,
       }, ...this.headers]
