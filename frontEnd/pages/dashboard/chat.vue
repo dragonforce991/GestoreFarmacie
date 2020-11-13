@@ -44,7 +44,7 @@
             </div>
             <v-list-item class = "left" v-for="(u, index) in chats" :key="`user-${index}`" @click="setChat(u)">
               <v-list-item-icon>
-                <v-icon color='primary'>mdi-account-circle-outline</v-icon>
+                <v-icon color='primary'>{{ u.icon }}</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title v-text="u.name"></v-list-item-title>
@@ -268,7 +268,7 @@ export default {
               var name = v.Name.split("-")[0] === this.fullName ? v.Name.split("-")[1] : v.Name.split("-")[0]
               chatArray.splice(0,0,{
                 name: name,
-                icon: v.isGroup ? "" : "mdi-account-circle",
+                icon: v.isGroup ? "mdi-account-group" : "mdi-account-circle",
                 isUser: v.isGroup ? false : true,
                 id: el.id,
                 users : v.users
