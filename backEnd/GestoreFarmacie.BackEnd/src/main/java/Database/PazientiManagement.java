@@ -40,7 +40,10 @@ public class PazientiManagement {
 			rs.next();
 			return rs.getInt(1);
 		}catch(Exception e) {
-			System.out.println(e); 
+			System.out.println(e.getMessage());
+			System.out.println(e.getCause());
+			System.out.println(e.getStackTrace());
+			
 			return null;
 			}
 	}

@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-advanced-table :slots="['role']" ref="table" @selected="selected = $event" dense outlined :columns="headers" v-model="users" >
       <template v-slot:role="{item}">
         {{item.role.id  == "1" ? "Regione" : item.role.id == "2" ? "Titolare" : item.role.id == "3" ? "Operatore di banco" : "Dottore Farmacista"}}
@@ -16,7 +16,7 @@
 
           <v-btn color="white" text :disabled="!validForm" :loading="loading" @click="create">Crea</v-btn>
         </v-toolbar>
-        <v-container>
+        <v-container fluid>
           <v-form v-model="validForm">
             <v-row dense>
               <v-banner>User</v-banner>
@@ -30,7 +30,7 @@
                 <v-text-field :rules="$rules.basicRules" type="text" dense outlined label="Cognome" v-model="user.surname"></v-text-field>
               </v-col>
               <v-col cols="6">
-                <v-text-field :rules="$rules.basicRules" type="text" dense outlined label="Telefono" v-model="user.phone_number"></v-text-field>
+                <v-text-field :rules="$rules.basicRules" type="number" dense outlined label="Telefono" v-model="user.phone_number"></v-text-field>
               </v-col>
               <v-col cols="6">
                 <v-text-field :rules="$rules.basicRules" type="password" dense outlined label="Password" v-model="user.password"></v-text-field>
@@ -52,7 +52,7 @@
                   <v-text-field :rules="$rules.basicRules" type="text" dense outlined label="Nome Farmacia" v-model="farmacia.Nome"></v-text-field>
                 </v-col>
                 <v-col cols="6">
-                  <v-text-field :rules="$rules.basicRules" type="text" dense outlined label="Telefono" v-model="farmacia.Telefono"></v-text-field>
+                  <v-text-field :rules="$rules.basicRules" type="number" dense outlined label="Telefono" v-model="farmacia.Telefono"></v-text-field>
                 </v-col>
               </v-row>
               
@@ -75,7 +75,7 @@ export default
           text: 'Email',
           value: 'email',
           dataType: 'text',
-          caseSensitiveSelector: false,
+          caseSensitive: false
         },
         {
           text: 'Nome',
@@ -92,7 +92,7 @@ export default
           text: 'Telefono',
           value: 'phone_number',
           dataType: 'text',
-          caseSensitiveSelector: true,
+          caseSensitive: false
         },
         {
           text: 'Ruolo',

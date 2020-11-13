@@ -105,7 +105,7 @@ export default
               this.$notifier.showInfo(message);
             }
             if(querySnapshot.docChanges()[0].type == "added" && !changed.isGroup){
-              const name = changed.Name.split("-")[0] == this.$store.state.user.name + " " + this.$store.state.user.cognome ? changed.Name.split("-")[1] : changed.Name.split("-")[0]
+              const name = changed.Name.split("-")[0] == this.$store.state.user.name + " " + this.$store.state.user.surname ? changed.Name.split("-")[1] : changed.Name.split("-")[0]
               let message = "Nuova Chat : " + name;
               this.$notifier.showInfo(message);
             }
@@ -114,7 +114,11 @@ export default
                 let message = "Nuovo messaggio in " + changed.Name;
                 this.$notifier.showInfo(message);
               }else {
-                const name = changed.Name.split("-")[0] == this.$store.state.user.name + " " + this.$store.state.user.cognome ? changed.Name.split("-")[1] : changed.Name.split("-")[0]
+                console.log("changed",changed.Name)
+                console.log("user",this.$store.state.user.name + " " + this.$store.state.user.surname);
+                console.log("changed.Name.split(-)", changed.Name.split("-") )
+
+                const name = changed.Name.split("-")[0] == this.$store.state.user.name + " " + this.$store.state.user.surname ? changed.Name.split("-")[1] : changed.Name.split("-")[0]
                 let message = "Nuovo messaggio da " + name
                 this.$notifier.showInfo(message);
               }

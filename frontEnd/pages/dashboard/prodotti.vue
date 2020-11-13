@@ -1,8 +1,8 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-advanced-table ref="table" @selected="selected = $event" dense outlined :columns="headers" v-model="movements" :slots="['product.obbligoRicetta']">
       <template v-slot:product.obbligoRicetta="{ item }">
-        {{ item.product.obbligoRicetta == true ? "NO" : "SI"}}
+        {{ item.product.obbligoRicetta == true ? "SI" : "NO"}}
       </template>
     </v-advanced-table>
       
@@ -17,7 +17,7 @@
           <v-btn color="white" text :disabled="!validForm" :loading="loading" @click="create">Crea</v-btn>
         </v-toolbar>
 
-        <v-container>
+        <v-container fluid>
           <v-form v-model="validForm">
             <v-row dense>
               <v-col cols="3">
@@ -115,6 +115,11 @@ export default
       headers:
       [
         {
+          text: 'idProdotto',
+          value: 'product.idProdotto',
+          dataType: 'text'
+        },
+        {
           text: 'Prodotto',
           value: 'product.nome',
           dataType: 'text',
@@ -129,7 +134,7 @@ export default
         {
           text: 'Prezzo',
           value: 'product.costoUnitario',
-          dataType: 'currency'
+          dataType: 'number'
         },
         {
           text: 'Codice',
@@ -180,7 +185,7 @@ export default
     this.$store.commit('appBar/setButtons', {
       addButton: this.$store.state.user.role.id == 2,
       excelButton: true,
-      importButton: true,
+      importButton: this.$store.state.user.role.id == 2,
     });
 
     this.focusSearchUnsubscriber = this.$store.subscribe((mutation) =>

@@ -53,8 +53,8 @@
           </v-list>
         </v-navigation-drawer>
         <div
-        class="chat">
-          <div class="mesgs">
+        class="chat" ref="chat">
+          <div class="mesgs" >
           <Message
             v-for="(message, index) in messages"
             :key="`message-${index}`"
@@ -117,6 +117,15 @@ export default {
     this.setUserName();
     //this.fetchMessages();
     this.getChats();
+  },
+  watch: {
+    messages() {
+      setTimeout(() => {
+        if (this.$refs.chat) {
+          this.$refs.chat.scrollTop = this.$refs.chat.scrollHeight;
+        }
+      }, 0);
+    },
   },
   computed: {
     user() {

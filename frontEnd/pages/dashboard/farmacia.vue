@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluld>
     <v-advanced-table table-key="acquisto" ref="table" :slots="['prodottiConRicetta']" dense outlined v-model="purchases" :columns="headers">
       <template v-slot:prodottiConRicetta="{ item }">
         {{ item.prodotti.map(el => el.prodotti.obbligoRicetta).some(el => el) ? 'Si' : 'No' }}
@@ -17,7 +17,7 @@
           <v-btn color="white" text :disabled="!validForm" :loading="loadingPatient" @click="createPatient">Crea</v-btn>
         </v-toolbar>
 
-        <v-container>
+        <v-container fluid>
           <v-form v-model="validForm">
             <v-row dense>
               <v-col cols="12">
@@ -61,7 +61,7 @@
           <v-btn color="white" text :disabled="!valid" :loading="loading" @click="create">Crea</v-btn>
         </v-toolbar>
 
-        <v-container>
+        <v-container fluid>
           <v-form v-model="validForm">
             <v-row dense>
               <v-col cols="1">
@@ -231,6 +231,11 @@ export default
           value: 'prodottiConRicetta',
           computedValue: (item) => item.prodotti.map(el => el.prodotti.obbligoRicetta).some(el => el),
           dataType: 'boolean'
+        },
+        {
+          text: 'Totale',
+          value: 'totale',
+          dataType : 'number'
         }
       ]
     }
@@ -272,7 +277,11 @@ export default
     },
 
     availableProducts() {
-      return this.products.filter(el => !this.sale.products.map(prod => prod && prod.idProdotto).includes(el.idProdotto))
+      var product = this.products.filter(el => !this.sale.products.map(prod => prod && prod.idProdotto).includes(el.idProdotto))
+      if(this.$store.state.user.role.id=='3'){
+        product = product.filter(el => el.obbligoRicetta)
+      }
+      return product;
     }
   },
 

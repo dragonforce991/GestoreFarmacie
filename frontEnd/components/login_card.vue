@@ -1,6 +1,6 @@
 <template>
   <v-card elevation="4">
-    <v-container>
+    <v-container @keyup.enter="login">
       <v-alert type="error" v-if="errorMessage !== ''">
         {{ errorMessage }}
       </v-alert>
@@ -8,7 +8,7 @@
       <v-card-title>{{ title }}</v-card-title>
 
       <v-card-text>
-        <v-form v-model="validForm">
+        <v-form v-model="validForm" >
           <v-text-field
             v-model="email"
             :rules="rules"

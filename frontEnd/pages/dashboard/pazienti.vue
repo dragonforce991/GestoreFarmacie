@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fuild>
     <v-advanced-table table-key="idPazienti" dense outlined :columns="headers" v-model="patients" />
 
     <v-dialog v-model="dialog" :persistent="loading" width="700">
@@ -13,7 +13,7 @@
           <v-btn color="white" text :disabled="!validForm" :loading="loading" @click="create">Crea</v-btn>
         </v-toolbar>
 
-        <v-container>
+        <v-container fluid>
           <v-form v-model="validForm">
             <v-row dense>
               <v-col cols="12">
