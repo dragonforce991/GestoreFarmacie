@@ -64,22 +64,10 @@
                 <v-text-field :rules="$rules.basicRules" dense outlined label="Codice" v-model="product.Codice"></v-text-field>
               </v-col>
 
-              <v-col cols="12">
-                  <v-combobox :rules="$rules.basicRules" v-model="product.ParoleChiave" :items="[]" hide-selected dense outlined label="Parole Chiave" multiple persistent-hint small-chips clearable>
-                    <template v-slot:no-data>
-                      <v-list-item>
-                        <v-list-item-content>
-                          <v-list-item-title>
-                            Premi <kbd>invio</kbd> per aggiungere un elemento
-                          </v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </template>
-                  </v-combobox>
-              </v-col>
+              
 
                 <v-col cols="12">
-                  <v-textarea dense outlined label="Descrizione" v-model="movement.Descrizione"></v-textarea>
+                  <v-textarea dense :rules="$rules.basicRules" outlined label="Descrizione" v-model="movement.Descizione"></v-textarea>
                 </v-col>
               </v-row>
             </v-row>
@@ -226,8 +214,8 @@ export default
           idProdotto: this.movement.product.idProdotto,
           quantita: this.movement.quantita
         });
-
-        this.movements.push(this.movement);
+        this.movements = await this.$axios.$get('/Magazzino/getMagazzino');
+        this.products = await this.$axios.$get('/Product/getProducts')
         this.$notifier.showInfo('Movimento creato con successo');
 
         this.loading = this.dialog = false;
