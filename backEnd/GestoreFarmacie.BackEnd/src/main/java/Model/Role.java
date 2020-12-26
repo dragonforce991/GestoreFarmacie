@@ -8,13 +8,15 @@ public class Role {
 	private String name;
 	private String icon;
 	private String default_path;
+	private Boolean ricettaEnabled;
 	private ArrayList<Pages> pages;
-	public Role(String id, String name, String icon, String default_path, ArrayList<Pages> pages) {
+	public Role(String id, String name, String icon, String default_path, ArrayList<Pages> pages, Boolean ricettaEnabled) {
 		this.id = id;
 		this.name = name;
 		this.icon = icon;
 		this.default_path = default_path;
 		this.pages = pages;
+		this.setRicettaEnabled(ricettaEnabled);
 	}
 	public Role() {
 		this.pages = new ArrayList<Pages>();
@@ -49,6 +51,12 @@ public class Role {
 	}
 	public void setPages(ArrayList<Pages> pages) {
 		this.pages = pages;
+	}
+	public Boolean getRicettaEnabled() {
+		return ricettaEnabled;
+	}
+	public void setRicettaEnabled(Boolean ricettaEnabled) {
+		this.ricettaEnabled = ricettaEnabled;
 	}
 	
 }

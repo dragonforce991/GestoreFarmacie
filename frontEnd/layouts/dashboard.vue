@@ -2,9 +2,7 @@
   <v-app style="background: white">
     <v-navigation-drawer app enable-resize-watcher v-model="drawer" width="280">
       <v-list expand>
-        <span v-for="page in tree" :key="page.id">
-          <drawer-element :item="page"></drawer-element>
-        </span>
+        <drawer-element v-for="page in tree" :key="page.id" :item="page" />
       </v-list>
     </v-navigation-drawer>
 
@@ -31,16 +29,6 @@
           <v-list>
             <span class="overline ml-3 mb-2">Benvenuto!</span>
 
-            <v-list-item>
-              <v-list-item-action>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-action>
-
-              <v-list-item-content>
-                <v-list-item-title>Profilo</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
             <v-divider></v-divider>
 
             <v-list-item @click="$refs.confirmationDialog.show()">
@@ -61,24 +49,76 @@
       <nuxt />
     </v-main>
 
-    <snackbar></snackbar>
+    <v-slide-y-transition>
+      <OperationalAppBar key="appBar" v-if="$store.state.appBar.visible"></OperationalAppBar>
+    </v-slide-y-transition>
 
-    <simple-confirmation-dialog @result="result" ref="confirmationDialog" title="Conferma operazione" description="Sei sicuro di voler uscire ?" negativeButtonText="Annulla" positiveButtonText="Conferma"></simple-confirmation-dialog>
+    <snackbar />
+
+    <simple-confirmation-dialog
+      @result="result" ref="confirmationDialog"
+      title="Conferma operazione" description="Sei sicuro di voler uscire ?"
+      negativeButtonText="Annulla" positiveButtonText="Conferma" />
   </v-app>
 </template>
 
 <script>
+import OperationalAppBar from '~/components/dashboard/operational_app_bar';
+import firebase from "~/plugins/firebase.js";
 export default
 {
   middleware: 'auth',
+
+  components: {
+    OperationalAppBar,
+  },
 
   data()
 	{
 		return {
       drawer: true,
+      isMounted : false
 		}
   },
+  mounted(){
+      const db = this.$fire.firestore;
+      const username = this.$store.state.user.id;
+      db
+      .collection("chat")
+      .where("users", "array-contains", username)
+      .onSnapshot((querySnapshot) =>{
+        if(this.isMounted){
+          const changed = querySnapshot.docChanges()[0].doc.data()
+          if(changed.lastModifiedBy !== username){
+            if(querySnapshot.docChanges()[0].type == "added" && changed.isGroup){
+              let message = "Sei stato aggiunto al gruppo " + changed.Name;
+              this.$notifier.showInfo(message);
+            }
+            if(querySnapshot.docChanges()[0].type == "added" && !changed.isGroup){
+              const name = changed.Name.split("-")[0] == this.$store.state.user.name + " " + this.$store.state.user.surname ? changed.Name.split("-")[1] : changed.Name.split("-")[0]
+              let message = "Nuova Chat : " + name;
+              this.$notifier.showInfo(message);
+            }
+            if(querySnapshot.docChanges()[0].type == "modified"){
+              if(changed.isGroup){
+                let message = "Nuovo messaggio in " + changed.Name;
+                this.$notifier.showInfo(message);
+              }else {
+                console.log("changed",changed.Name)
+                console.log("user",this.$store.state.user.name + " " + this.$store.state.user.surname);
+                console.log("changed.Name.split(-)", changed.Name.split("-") )
 
+                const name = changed.Name.split("-")[0] == this.$store.state.user.name + " " + this.$store.state.user.surname ? changed.Name.split("-")[1] : changed.Name.split("-")[0]
+                let message = "Nuovo messaggio da " + name
+                this.$notifier.showInfo(message);
+              }
+            }  
+          }  
+        }
+        this.isMounted = true;
+      })
+    
+  },
   computed:
   {
     tree() {
@@ -97,7 +137,6 @@ export default
       return this.$store.state.title
     }
   },
-
   methods:
   {
     async result(val)
@@ -108,11 +147,11 @@ export default
       {
         try
         {
-          await this.$axios.$post('/auth/logout');
+          await this.$axios.$post('/logout');
 
           this.$store.commit('auth/setUser', null);
           this.$store.commit('auth/setLoggedIn', false);
-
+          
           this.$router.go({ path: '/' })
         }
         catch (e)
@@ -141,7 +180,6 @@ li {
   cursor: pointer;
 }
 li:hover,
-li.nuxt-link-active,
 li.nuxt-link-exact-active {
   background-color: #F6F6F6;
 }

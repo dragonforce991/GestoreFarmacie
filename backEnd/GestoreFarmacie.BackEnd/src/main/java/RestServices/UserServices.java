@@ -1,10 +1,13 @@
 package RestServices;
 
+import java.util.ArrayList;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -18,6 +21,62 @@ import Model.User;
 @Path("user")
 public class UserServices {
 	
+	@GET
+	@Path("/getUsers")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getUsers(@Context ContainerRequestContext crc) {
+		try {
+			UserManagement userManagement = new UserManagement();
+			User u = (User) crc.getProperty("User");
+			ArrayList<User> uList = new ArrayList<User>();
+			if(u.getRole().getId().equals("1"))
+				uList = userManagement.getUsers(null, u);
+			else
+				uList = userManagement.getUsers(String.valueOf(u.getFarmacia()), u);
+			if(uList != null)
+				return Response.status(200).entity(uList).build();
+			return Response.status(400).build();
+		}catch(Exception e) {
+			return Response.status(500).build();
+		}
+	}
+	
+	@GET
+	@Path("/getUsersChat")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getUsersChat(@Context ContainerRequestContext crc) {
+		try {
+			UserManagement userManagement = new UserManagement();
+			User u = (User) crc.getProperty("User");
+			ArrayList<User> uList = new ArrayList<User>();
+			if(u.getRole().getId().equals("1"))
+				uList = userManagement.getUsersChat(null, u);
+			else
+				uList = userManagement.getUsersChat(String.valueOf(u.getFarmacia()), u);
+			if(uList != null)
+				return Response.status(200).entity(uList).build();
+			return Response.status(400).build();
+		}catch(Exception e) {
+			return Response.status(500).build();
+		}
+	}
+	
+	
+	@GET
+	@Path("/getUserById")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getUserById(@QueryParam("Id") String id, @Context ContainerRequestContext crc) {
+		try {
+			UserManagement userManagement = new UserManagement();
+			User u = userManagement.getUser(id);
+			if(u != null)
+				return Response.status(200).entity(u).build();
+			return Response.status(400).entity("Id non trovato").build();
+		}catch(Exception e) {
+			return Response.status(500).build();
+		}
+	}
+	
 	@POST
 	@Path("/insert")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -30,17 +89,19 @@ public class UserServices {
 	
 			if(LoggedUser.getRole().getId().equals("1") && !toInsert.getRole().getId().equals("2")) {
 				System.out.println("primo");
-				return Response.status(400).build();
+				return Response.status(400).entity("Operazione non permessa all'utente").build();
 				
 			}
 			if(LoggedUser.getRole().getId().equals("2") && !toInsert.getRole().getId().equals("1") && !toInsert.getRole().getId().equals("2") ) {
 				UserManagement userManagement = new UserManagement();
+				toInsert.setFarmacia(LoggedUser.getFarmacia());
 				Integer userId = userManagement.insertNewUser(toInsert, toInsert.getRole().getId(), toInsert.getPassword());
 				Integer state = userId != null ? 200 : 400;
-				return Response.status(state).build();
+				String entity = state == 200 ? "OK" : "Errore generico";
+				return Response.status(state).entity(entity).build();
 			} else {
 				System.out.println("secondo");
-				return Response.status(400).build();
+				return Response.status(400).entity("Operazione non permessa all'utente").build();
 			}
 		}
 		catch(Exception e) {

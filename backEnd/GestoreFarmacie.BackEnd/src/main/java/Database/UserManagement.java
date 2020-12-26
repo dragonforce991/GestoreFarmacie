@@ -3,7 +3,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.sql.Types;
 import java.sql.PreparedStatement;
 
 
@@ -17,8 +16,8 @@ public class UserManagement {
 	public Boolean setFarmacia(int userId, int farmaciaId, Connection conn) {
 		try{
 			PreparedStatement stmt = (PreparedStatement) conn.prepareStatement("UPDATE USER SET Farmacia = (?) WHERE Id = (?)");
-			stmt.setInt(1, farmaciaId);
-			stmt.setInt(2, userId);
+			Utility.setStatement(stmt,1, farmaciaId);
+			Utility.setStatement(stmt,2, userId);
 			stmt.execute();
 			return true;
 		}catch(Exception e) {
@@ -26,6 +25,126 @@ public class UserManagement {
 		}
 		
 	}
+	
+	public ArrayList<User> getUsers(String idFarmacia, User CurrentUser){
+		ArrayList<User> userList = new ArrayList<User>();
+		try {
+			Connection conn = Connect.getConnection();
+			String sql = "Select name, Phone_Number, Role, surname, email, User.Id, farmacia, farmacia.Nome from user inner join farmacia on Farmacia = Farmacia.Id  where User.id != (?) ";
+			if(idFarmacia != null) {
+				sql +="and farmacia = (?)"; 
+			}
+			
+			PreparedStatement stmt = (PreparedStatement) conn.prepareStatement(sql);
+			Utility.setStatement(stmt,1, CurrentUser.getId());
+			if(idFarmacia != null)
+				Utility.setStatement(stmt,2, idFarmacia);
+			ResultSet rs = stmt.executeQuery();
+			String Role=null;
+			while (rs.next()) {
+				User user = new User();
+				user.setName(rs.getString("name"));
+				user.setPhone_number(rs.getString("Phone_Number"));
+				Role = rs.getString("Role");
+				user.setSurname(rs.getString("surname"));
+				user.setEmail(rs.getString("email"));
+				user.setId(rs.getString("Id"));
+				user.setFarmacia(rs.getInt("farmacia"));
+				user.setNomeFarmacia(rs.getString("farmacia.Nome"));
+				if(Role != null) {
+					Role r = new Role();
+					r.setId(Role);
+					user.setRole(r);
+				}
+				userList.add(user);
+			}
+			
+			return userList;
+		}catch(Exception e ) {
+			System.out.println(e);
+			return null;
+		}
+	}
+	
+	public ArrayList<User> getUsersChat(String idFarmacia, User CurrentUser){
+		ArrayList<User> userList = new ArrayList<User>();
+		try {
+			Connection conn = Connect.getConnection();
+			String sql = "Select name, Phone_Number, Role, surname, email, Id, farmacia from user where Id != (?) ";
+			if(idFarmacia != null) {
+				sql +="and farmacia = (?)";
+				if(!"2".equals(CurrentUser.getRole().getId())) {
+					sql += " and Role > '1'";
+				}
+				else {
+					sql +=" or Role = '1'";
+				}
+			}
+			else {
+				sql += "and Role <= '2'";
+			}
+			PreparedStatement stmt = (PreparedStatement) conn.prepareStatement(sql);
+			Utility.setStatement(stmt,1, CurrentUser.getId());
+			if(idFarmacia != null)
+				Utility.setStatement(stmt,2, idFarmacia);
+			ResultSet rs = stmt.executeQuery();
+			String Role=null;
+			while (rs.next()) {
+				User user = new User();
+				user.setName(rs.getString("name"));
+				user.setPhone_number(rs.getString("Phone_Number"));
+				Role = rs.getString("Role");
+				user.setSurname(rs.getString("surname"));
+				user.setEmail(rs.getString("email"));
+				user.setId(rs.getString("Id"));
+				user.setFarmacia(rs.getInt("farmacia"));
+				if(Role != null) {
+					Role r = new Role();
+					r.setId(Role);
+					user.setRole(r);
+				}
+				userList.add(user);
+			}
+			
+			return userList;
+		}catch(Exception e ) {
+			System.out.println(e);
+			return null;
+		}
+	}
+	
+	public User getUser(String id) {
+		User user=null;
+		try {
+			Connection conn = Connect.getConnection();
+			PreparedStatement stmt = (PreparedStatement) conn.prepareStatement("Select name, Phone_Number, Role, surname, email, Id, farmacia from user where Id = (?) ");
+			Utility.setStatement(stmt,1, id);
+			ResultSet rs = stmt.executeQuery();
+			String Role=null;
+			while (rs.next()) {
+				user = new User();
+				user.setName(rs.getString("name"));
+				user.setPhone_number(rs.getString("Phone_Number"));
+				Role = rs.getString("Role");
+				user.setSurname(rs.getString("surname"));
+				user.setEmail(rs.getString("email"));
+				user.setId(rs.getString("Id"));
+				user.setFarmacia(rs.getInt("farmacia"));
+				if(Role != null) {
+					Role r = new Role();
+					r.setId(Role);
+					user.setRole(r);
+				}
+			}
+			
+			return user;
+		}catch(Exception e ) {
+			System.out.println(e);
+			return null;
+		}
+	}
+	
+	
 	public User getUserFromAccessToken(String value) {
 		User u = Utility.getUserFromJWT(value);
 		return u;
@@ -35,9 +154,9 @@ public class UserManagement {
 		User user = new User();
 		try {
 			Connection conn = Connect.getConnection();
-			PreparedStatement stmt = (PreparedStatement) conn.prepareStatement("Select name, Phone_Number, Role, surname, email, Id from user where email = (?) and Password = (?) ");
-			stmt.setString(1, email);
-			stmt.setString(2, password);
+			PreparedStatement stmt = (PreparedStatement) conn.prepareStatement("Select name, Phone_Number, Role, surname, email, Id, farmacia from user where email = (?) and Password = (?) ");
+			Utility.setStatement(stmt,1, email);
+			Utility.setStatement(stmt,2, password);
 			ResultSet rs = stmt.executeQuery();
 			String Role=null;
 			while (rs.next()) {
@@ -47,6 +166,7 @@ public class UserManagement {
 				user.setSurname(rs.getString("surname"));
 				user.setEmail(rs.getString("email"));
 				user.setId(rs.getString("Id"));
+				user.setFarmacia(rs.getInt("farmacia"));
 			}
 			if(Role != null)
 				user.setRole(getRole(Role));
@@ -62,8 +182,8 @@ public class UserManagement {
 		try {
 		
 			Connection conn = Connect.getConnection();
-			PreparedStatement stmt = (PreparedStatement) conn.prepareStatement("select Id, Name, icon, Default_Path from role where role.id = (?)");
-			stmt.setString(1, RoleId);
+			PreparedStatement stmt = (PreparedStatement) conn.prepareStatement("select Id, Name, icon, Default_Path, ricettaEnabled from role where role.id = (?)");
+			Utility.setStatement(stmt,1, RoleId);
 			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()) {
@@ -71,7 +191,9 @@ public class UserManagement {
 				role.setIcon(rs.getString("icon"));
 				role.setId(rs.getString("Id"));
 				role.setName(rs.getString("Name"));
+				role.setRicettaEnabled(rs.getBoolean("ricettaEnabled"));
 				role.setPages(getPages(RoleId));
+			
 			}
 		}catch(Exception e) {
 			System.out.println(e);
@@ -85,7 +207,7 @@ public class UserManagement {
 		try {
 			Connection conn = Connect.getConnection();
 			PreparedStatement stmt = (PreparedStatement) conn.prepareStatement("select pages.Id, Name, Title, Url, Icon, canModify, canDelete, canCreate from pages inner join pagesrole__r on pages.Id = pagesrole__r.IdPage where pagesrole__r.IdRole=(?)");
-			stmt.setString(1, roleId);
+			Utility.setStatement(stmt,1, roleId);
 			ResultSet rs = stmt.executeQuery();
 			
 			
@@ -117,16 +239,13 @@ public class UserManagement {
 	public Integer insertNewUser(User u,String Role,String password,Connection conn) {
 		try {
 			PreparedStatement stmt =(PreparedStatement) conn.prepareStatement("Insert into user(name,surname,email,Phone_Number,Role,Password,Farmacia) values(?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-			stmt.setString(1, u.getName());
-			stmt.setString(2, u.getSurname());			
-			stmt.setString(3, u.getEmail());
-			stmt.setString(4, u.getPhone_number());
-			stmt.setString(5, Role);
-			stmt.setString(6, password);
-			if(u.getFarmacia() != null)
-				stmt.setInt(7, u.getFarmacia());
-			else 
-				stmt.setNull(7, Types.INTEGER);
+			Utility.setStatement(stmt,1, u.getName());
+			Utility.setStatement(stmt,2, u.getSurname());			
+			Utility.setStatement(stmt,3, u.getEmail());
+			Utility.setStatement(stmt,4, u.getPhone_number());
+			Utility.setStatement(stmt,5, Role);
+			Utility.setStatement(stmt,6, password);
+			Utility.setStatement(stmt, 7, u.getFarmacia());
 			stmt.execute();
 			ResultSet generatedKeys = stmt.getGeneratedKeys();
 			generatedKeys.next();

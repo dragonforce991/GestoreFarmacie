@@ -14,7 +14,7 @@ public class middleware implements ContainerRequestFilter{
 
 	public void filter(ContainerRequestContext requestContext) throws IOException {
 		
-		if(!requestContext.getUriInfo().getPath().equals("Login")) {
+		if(!requestContext.getUriInfo().getPath().equals("Login") && !requestContext.getMethod().equals("OPTIONS")) {
 			String accessToken = requestContext.getCookies().get("accessToken").getValue();
 			System.out.println("access Token = " + accessToken);
 			try {

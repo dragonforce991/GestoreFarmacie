@@ -1,0 +1,587 @@
+{
+	"info": {
+		"_postman_id": "bd99164c-91c1-4de7-aaa3-03b014a6c486",
+		"name": "GestoreFarmacie",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "127.0.0.1:8082/api/Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "//{ \"email\" : \"regione.lombardia@gmail.com\", \"password\" : \"123456\"}\r\n{ \"email\" : \"titolare.farmacia@prova.it\", \"password\" : \"123456\"}\r\n\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8082/api/Login",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"Login"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "insertUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"full_name\": \"ProvaDottoreFarmacista\",\r\n    \"name\": \"Prova\",\r\n    \"surname\": \"DottoreFarmacista\",\r\n    \"email\": \"provaDottoreFarmacista@prova.it\",\r\n    \"phone_number\": \"02 123456789\",\r\n    \"role\": {\"id\" : \"4\"},\r\n    \"password\": \"12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8082/api/user/insert",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"user",
+								"insert"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUser",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8082/api/user/getUser",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"user",
+								"getUser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8082/api/user/getUserById?Id=1",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"user",
+								"getUserById"
+							],
+							"query": [
+								{
+									"key": "Id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUsers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8082/api/user/getUsers",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"user",
+								"getUsers"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Farmacia",
+			"item": [
+				{
+					"name": "insertFarmacia",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\": {\r\n        \"full_name\": \"UtenteTitolare\",\r\n        \"name\": \"Utente\",\r\n        \"surname\": \"Titolare\",\r\n        \"email\": \"utenteTitolare@prova.it\",\r\n        \"phone_number\": \"02 123456789\",\r\n        \"role\": {\r\n            \"id\": \"2\"\r\n        },\r\n        \"password\": \"123455\"\r\n    },\r\n    \"farmacia\" : {\r\n\t    \"Nome\":\"Farmacia stazione\",\r\n\t    \"Indirizzo\":\"via indirizzo civico\",\r\n\t    \"Telefono\":\"345090156457\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8082/api/Farmacia/insert",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"Farmacia",
+								"insert"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getFarmacie",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8082/api/Farmacia/getFarmacie",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"Farmacia",
+								"getFarmacie"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Acquisti",
+			"item": [
+				{
+					"name": "newAcquisto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"paziente\" : {\r\n        \"idPazienti\" : \"2\"\r\n    },\r\n    \"Totale\" : 115,\r\n    \"prodotti\" :[\r\n        {\r\n            \"quantita\" : 1,\r\n            //\"Codice_Regionale_Medico\": \"1234\",\r\n            //\"DataRicetta\" : \"Opzionale, solo prodotti con ricetta medica\",\r\n            \"Prodotto\" : {\r\n                \"idProdotto\" : \"1\"\r\n            }\r\n        },\r\n        {\r\n            \"quantita\" : 3,\r\n            //\"Codice_Regionale_Medico\": \"Opzionale, solo prodotti con ricetta medica\",\r\n            //\"DataRicetta\" : \"Opzionale, solo prodotti con ricetta medica\",\r\n            \"Prodotto\" : {\r\n                \"idProdotto\" : \"3\"\r\n            }\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8082/api/Acquisti/newAcquisto",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"Acquisti",
+								"newAcquisto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAcquisti",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8082/api/Acquisti/getAcquisti",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"Acquisti",
+								"getAcquisti"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Magazzino",
+			"item": [
+				{
+					"name": "getMagazzino",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8082/api/Magazzino/getMagazzino",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"Magazzino",
+								"getMagazzino"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "insertProduct",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idProdotto\":\"3\",\r\n    \"quantita\":\"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8082/api/Magazzino/insertProduct",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"Magazzino",
+								"insertProduct"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "insertMagazino",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"magazzino\":[\r\n        {\r\n            \"idProdotto\":\"1\",\r\n            \"quantita\":\"10\"\r\n        },\r\n        {\r\n            \"idProdotto\":\"2\",\r\n            \"quantita\":\"10\"\r\n        }\r\n    ]\r\n    \r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8082/api/Magazzino/insertMagazzino",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"Magazzino",
+								"insertMagazzino"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Prodotti",
+			"item": [
+				{
+					"name": "getProducts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8082/api/Product/getProducts",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"Product",
+								"getProducts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getProductById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8082/api/Product/getProductById?Id=1",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"Product",
+								"getProductById"
+							],
+							"query": [
+								{
+									"key": "Id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getProductByCode",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8082/api/Product/getProductByCode?Codice=123456789",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"Product",
+								"getProductByCode"
+							],
+							"query": [
+								{
+									"key": "Codice",
+									"value": "123456789"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "insertProduct",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"ObbligoRicetta\":false,\r\n   \"CostoUnitario\" : 35.0,\r\n   \"Nome\":\"provaInsert\",\r\n   \"Azienda\":\"provaAzienda\",\r\n   \"Descizione\":\"provaDescrizione\",\r\n   \"Codice\":\"789465132\",\r\n   \"ParoleChiave\":[\"a\",\"b\"] \r\n\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8082/api/Product/insertProduct",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"Product",
+								"insertProduct"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Pazienti",
+			"item": [
+				{
+					"name": "insertPaziente",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Codice_Fiscale\" :\"DNGDVD99E02F158U\",\r\n    \"Nome\":\"DAVIDE\",\r\n    \"Cognome\":\"DANGELO\",\r\n    //\"DataDiNascita\":\"1999/05/02\",\r\n    \"Telefono\":\"3450701614\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8082/api/Pazienti/insert",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"Pazienti",
+								"insert"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPazienti",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8082/api/Pazienti/getPazienti",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"Pazienti",
+								"getPazienti"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "searchPazienti",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Codice_Fiscale\" : \"DNGDVD99E02F158U\"\r\n}\r\n\r\n\r\n    /*{\r\n        \"Nome\" : \"Davide\",\r\n        \"Cognome\" : \"DAngelo\"\r\n        //\"DataDiNascita\":\"\"\r\n        //i tre parametri non sono obbligatori, ne basta uno solo. possono essere combinati.\r\n        //postman vuole che si cancelli l'intero commento per far funzionare il pezzo con solo codice fiscale 🙃\r\n    }*/\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8082/api/Pazienti/searchPazienti",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"Pazienti",
+								"searchPazienti"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

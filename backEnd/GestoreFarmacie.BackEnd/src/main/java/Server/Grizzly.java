@@ -14,7 +14,9 @@ public class Grizzly {
     public static HttpServer startServer() {
     	
         final ResourceConfig rc = new ResourceConfig().packages("RestServices");
+        //rc.register(MultiPartFeature.class);
         rc.register(new corsFilter());
+        rc.register(corsFilter.class);
         rc.register(new middleware());
         
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
